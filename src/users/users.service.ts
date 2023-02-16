@@ -8,8 +8,18 @@ import { User } from './entities/user.entity';
 export class UsersService {
 
 
-  async create(createUserDto: CreateUserDto) {
-    const newUser = await User.save(createUserDto);
+  async create(createUserDto: CreateUserDto, hash: string) {
+    const newUser = new User();
+
+    newUser.pseudo = createUserDto.pseudo;
+    newUser.password = hash;
+    newUser.email = createUserDto.email;
+    newUser.admin = createUserDto.admin;
+    newUser.photo = createUserDto.photo;
+    newUser.city = createUserDto.city;
+    newUser.description = createUserDto.description;
+
+    await newUser.save();
 
     return newUser;
   };

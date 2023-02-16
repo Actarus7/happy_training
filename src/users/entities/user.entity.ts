@@ -47,22 +47,22 @@ export class User extends BaseEntity {
 
 
     @ApiProperty()
-    @Column()
+    @Column({ type: 'timestamp with local time zone', default: () => 'CURRENT_TIMESTAMP' })
     registrationDate: Date;
 
 
     @ApiProperty()
-    @Column({ type: 'varchar' })
+    @Column({ type: 'varchar', nullable: true })
     description: string;
 
 
     @ApiProperty()
-    @Column()
+    @Column({ nullable: true })
     friends: User[];
 
 
     /* @ApiProperty()
-    @Column()
+    @Column({nullable: true})
     trainings: Training[];
 
 
