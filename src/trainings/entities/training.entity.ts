@@ -1,4 +1,4 @@
-import { Exercise } from "src/exercises/entities/exercice.entity";
+import { Exercise } from "src/exercises/entities/exercises.entity";
 import { Session } from "src/sessions/entities/session.entity";
 import { Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 

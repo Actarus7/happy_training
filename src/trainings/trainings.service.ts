@@ -22,13 +22,13 @@ export class TrainingsService {
   }
 
    async update(id: number, training: Training):Promise<Training> {
-     await this.trainingsService.update(id, training)
-     return this.trainingsService.findById(id)
+     await this.trainingsService.update(id, training);
+     return this.trainingsService.findById(id);
     //`This action updates a #${id} training`;
   }
 
-  async remove(id: number): Promise<void> {
-    return await this.trainingsService.remove(id)
-    //`This action removes a #${id} training`;
+  async delete(id: number): Promise<void> {
+    return await this.trainingsService.delete(id);
+    //`This action deletes a #${id} training`;
   }
 }

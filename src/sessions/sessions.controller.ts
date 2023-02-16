@@ -13,13 +13,13 @@ export class SessionsController {
   }
 
   @Get()
-  findAll() {
-    return this.sessionsService.findAll();
+  async findAll() {
+    return await this.sessionsService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.sessionsService.findOne(+id);
+    return this.sessionsService.findById(+id);
   }
 
   @Patch(':id')
