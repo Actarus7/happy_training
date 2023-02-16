@@ -1,26 +1,89 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserFriendListDto } from './dto/update-user-friend-list.dto';
+import { User } from './entities/user.entity';
+
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
 
-  findAll() {
-    return `This action returns all users`;
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  async create(createUserDto: CreateUserDto) {
+    const newUser = await User.save(createUserDto);
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+    return newUser;
+  };
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
-}
+
+
+  async findAll() {
+    const users = await User.find();
+
+    if (users.length > 0) {
+      return users;
+    };
+
+    return undefined;
+  };
+
+
+
+  async findOneByPseudo(pseudo: string) {
+    const user = await User.findOne({ where: { pseudo: pseudo } });
+
+    if (user) {
+      return user;
+    };
+
+    return undefined;
+  };
+
+
+
+  async findOneByEmail(email: string) {
+    const user = await User.findOne({ where: { email: email } });
+
+    if (user) {
+      return user;
+    };
+
+    return undefined;
+  };
+
+
+
+  async findOneById(id: number) {
+    const user = await User.findOneBy({ id });
+
+    if (user) {
+      return user;
+    };
+
+    return undefined;
+  };
+
+
+
+  async updateFriendList(id: number, updateUserFriendListDto: UpdateUserFriendListDto) {
+
+    await User.update(id, updateUserFriendListDto);
+
+    return await User.findOneBy({ id });
+
+  };
+
+
+
+  async remove(id: number) {
+    const deleteUser = await User.findOneBy({ id });
+
+    await deleteUser.remove();
+
+    if (deleteUser) {
+      return deleteUser;
+    };
+
+    return undefined;
+  };
+
+};
