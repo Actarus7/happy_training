@@ -6,7 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { FrienshipsModule } from './frienships/frienships.module';
+import { FriendshipsModule } from './friendships/friendships.module';
 
 @Module({
   imports: [
@@ -23,9 +23,9 @@ import { FrienshipsModule } from './frienships/frienships.module';
     }),
     UsersModule,
     AuthModule,
-    FrienshipsModule,
+    FriendshipsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

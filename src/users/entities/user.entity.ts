@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
+import { Friendship } from "src/friendships/entities/friendship.entity";
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 
@@ -31,7 +32,7 @@ export class User extends BaseEntity {
 
 
     @ApiProperty()
-    @Column({type: 'boolean', default: false})
+    @Column({ type: 'boolean', default: false })
     admin: number;
 
 
@@ -60,19 +61,28 @@ export class User extends BaseEntity {
     friends: User[];
 
 
-    @ApiProperty()
+    /* @ApiProperty()
     @Column()
     trainings: Training[];
 
 
 
     // Relations
-    @OneToMany(() => Article, (article) => article.user)
+    @OneToMany(() => Article, article => article.user)
     articles: Article[];
 
 
-    @OneToMany(() => Comment, (comment) => comment.user)
-    comments: Comment[];
+    @OneToMany(() => Comment, comment => comment.user)
+    comments: Comment[]; */
+
+
+    @OneToMany(() => Friendship, friendship => friendship.userSender)
+    sentFriendships: Friendship[];
+
+
+    @OneToMany(() => Friendship, friendship => friendship.userReceiver)
+    receivedFriendships: Friendship[];
+
 
 
 
