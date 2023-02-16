@@ -11,10 +11,10 @@ async function bootstrap() {
   app.use(helmet());
   // app.useGlobalFilters(new HttpExceptionFilter());
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('Happy Training')
+    .setDescription('The happy training API description')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('happy_training')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
