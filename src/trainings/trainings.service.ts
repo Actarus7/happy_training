@@ -6,29 +6,36 @@ import { Training } from './entities/training.entity';
 @Injectable()
 export class TrainingsService {
 
-  constructor(private readonly trainingsService: TrainingsService) { }
   
- async create(createTrainingDto: CreateTrainingDto): Promise<Training> {
-  return await this.trainingsService.create(createTrainingDto);
-   //'This action adds a  training';
-  }
+ async create(createTrainingDto: CreateTrainingDto) {
+  const newTraining = new Training();
 
-  async findAll() : Promise <Training> {
-    return await this.trainingsService.findAll();
+    newTraining.title = createTrainingDto.title;
+    newTraining.description = createTrainingDto.description;
+
+    await newTraining.save()
+
+    return newTraining;
+  }
+ 
+  async findAll() {
+    return await Training.find();
     //`This action returns all trainings`;
   }
   async findById(id: number): Promise<Training> {
-    return await this.trainingsService.findById(id);
+      return await Training.findOneBy({id});
+    
   }
 
-   async update(id: number, training: Training):Promise<Training> {
-     await this.trainingsService.update(id, training);
-     return this.trainingsService.findById(id);
-    //`This action updates a #${id} training`;
+   async update(id: number, training: Training) {
+      await Training.update(id, training);
+     return Training.findBy({id});
+    //`Thi s action updates a #${id} training`;*/
   }
 
-  async delete(id: number): Promise<void> {
-    return await this.trainingsService.delete(id);
+  async delete(id: number) /*Promise<void>*/ {
+    return await Training.delete(id);
+    
     //`This action deletes a #${id} training`;
-  }
+  } 
 }

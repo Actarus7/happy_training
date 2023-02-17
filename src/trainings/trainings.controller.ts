@@ -9,22 +9,25 @@ export class TrainingsController {
   constructor(private readonly trainingsService: TrainingsService) {}
 
   @Post()
-  create(@Body() createTrainingDto: CreateTrainingDto): Promise<Training> {
-    const training = new Training();
-    training.title = createTrainingDto.title;
-    training.description = createTrainingDto.description;
-    return this.trainingsService.create(training);
+  async create(@Body() createTrainingDto: CreateTrainingDto): Promise<any> {
+    const newTraining = await this.trainingsService.create(createTrainingDto);
+
+    return {
+      statusCode: 201,
+      message: 'training créé',
+      data: newTraining
+    };
   }
 
-  @Get()
+   @Get()
   async findAll(){
-    return this.trainingsService.findAll();
+    return await this.trainingsService.findAll();
     
   }
 
   @Get(':id')
   async findById(@Param('id') id: string) {
-    return this.trainingsService.findById(+id);
+    return await this.trainingsService.findById(+id);
   }
 
   @Patch(':id')
@@ -32,11 +35,11 @@ export class TrainingsController {
     const training = new Training();
     training.title = updateTrainingDto.title;
     training.description = updateTrainingDto.description;
-    return this.trainingsService.update(+id, training);
+    return await this.trainingsService.update(+id, training);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
-    return this.trainingsService.delete(+id);
-  }
+  async remove(@Param('id') id: string) /* Promise<void>*/ {
+    return await this.trainingsService.delete(+id);
+  } 
 }

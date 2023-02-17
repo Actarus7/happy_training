@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TrainingsModule } from './trainings/trainings.module';
 import { SessionsModule } from './sessions/sessions.module';
-import { ExercicesModule } from './exercices/exercices.module';
+import { ExercisesModule } from './exercises/exercises.module';
+import { Training } from './trainings/entities/training.entity';
+import { Session } from './sessions/entities/session.entity';
+import { Exercise } from './exercises/entities/exercises.entity';
 
 @Module({
   imports: [
@@ -18,14 +20,15 @@ import { ExercicesModule } from './exercices/exercices.module';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [join(__dirname, '*', '.entity.{ts,js}')],
+      entities: [Training, Session, Exercise],
       synchronize: true,
+      logging: true
     }),
     TrainingsModule,
     SessionsModule,
-    ExercicesModule,
+    ExercisesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule {}

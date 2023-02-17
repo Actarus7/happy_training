@@ -1,8 +1,8 @@
 import { Session } from "src/sessions/entities/session.entity";
 import { Training } from "src/trainings/entities/training.entity";
-import { Column, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
-export class Exercise {
+export class Exercise extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -39,8 +39,7 @@ export class Exercise {
     @ManyToOne(() => Training, training => training.exercises)
     training: Training;
 
-    @ManyToMany(() => Session)
-    @JoinTable()
-    session: Session[];
+    @ManyToOne(() => Session, session=> session.exercises)
+    session: Session;
 
 }

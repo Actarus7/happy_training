@@ -7,32 +7,35 @@ import { Session } from './entities/session.entity';
 export class SessionsService {
   save: any;
 
-  constructor(private readonly sessionsService: SessionsService) { }
-  
   async create(createSessionDto: CreateSessionDto): Promise<Session> {
-    return await this.sessionsService.save(createSessionDto)
+    const session = new Session()
+    session.id = createSessionDto.id;
+    session.description = createSessionDto.description
+    await session.save()
+    return session
     //'This action adds a new session';
   }
  
 
   async findAll(){
-    return await this.sessionsService.findAll()
+    return await Session.find()
     //`This action returns all sessions`;
   }
 
   async findById(id: number) {
-    return await this.sessionsService.findById(id);
+    return await Session.findOneBy({id});
     //`This action returns a #${id} session`;
   }
 
   async update(id: number, updateSessionDto: UpdateSessionDto) {
-    await this.sessionsService.update(id, updateSessionDto);
-    return this.sessionsService.findById(id)
+    await Session.update(id, updateSessionDto);
+    return Session.findOneBy({id})
     //`This action updates a #${id} session`;
   }
 
-  async remove(id: number) {
-    return await this.sessionsService.remove(id);
+  async remove(id: number){
+    await Session.delete(id);
+    
     //`This action removes a #${id} session`;
   }
 }

@@ -1,8 +1,8 @@
 import { Exercise } from "src/exercises/entities/exercises.entity";
 import { Session } from "src/sessions/entities/session.entity";
-import { Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-export class Training {
+export class Training extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -12,7 +12,7 @@ export class Training {
     @Column()
     description: string;
 
-    @OneToMany(() => Session, session => session.trainings)
+    @OneToMany(() => Session, session => session.training)
     sessions: Session[];
 
     @OneToMany(() => Exercise, exercise => exercise.training)

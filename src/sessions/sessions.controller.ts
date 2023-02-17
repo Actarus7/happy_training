@@ -2,14 +2,15 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { SessionsService } from './sessions.service';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
+import { Session } from './entities/session.entity';
 
 @Controller('sessions')
 export class SessionsController {
   constructor(private readonly sessionsService: SessionsService) {}
 
   @Post()
-  create(@Body() createSessionDto: CreateSessionDto) {
-    return this.sessionsService.create(createSessionDto);
+  async create(@Body() createSessionDto: CreateSessionDto) {
+    return  await this.sessionsService.create(createSessionDto);
   }
 
   @Get()
@@ -18,17 +19,21 @@ export class SessionsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.sessionsService.findById(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.sessionsService.findById(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSessionDto: UpdateSessionDto) {
-    return this.sessionsService.update(+id, updateSessionDto);
+  async update(@Param('id') id: string, @Body() updateSessionDto: UpdateSessionDto) {
+    const session = new Session();
+    session.id = updateSessionDto.id;
+    session.description = updateSessionDto.description;
+
+    return await this.sessionsService.update(+id, updateSessionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.sessionsService.remove(+id);
   }
 }

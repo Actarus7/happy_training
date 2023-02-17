@@ -1,12 +1,19 @@
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import { IsNotEmpty, IsString } from "class-validator";
+import { Column } from "typeorm";
 
 export class CreateTrainingDto {
-    @PrimaryGeneratedColumn()
+
+    @IsNotEmpty()
+    @Column()
     id: number;
 
+    @IsNotEmpty()
+    @IsString()
     @Column()
     title: string;
-
+    
+    @IsNotEmpty()
+    @IsString()
     @Column()
     description: string;
 }
