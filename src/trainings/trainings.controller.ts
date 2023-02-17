@@ -2,33 +2,47 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TrainingsService } from './trainings.service';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { UpdateTrainingDto } from './dto/update-training.dto';
+import { Training } from './entities/training.entity';
 
 @Controller('trainings')
 export class TrainingsController {
-  constructor(private readonly trainingsService: TrainingsService) {}
+  constructor(private readonly trainingsService: TrainingsService) { }
+
+
+
 
   @Post()
-  create(@Body() createTrainingDto: CreateTrainingDto) {
-    return this.trainingsService.create(createTrainingDto);
-  }
+  async create(@Body() createTrainingDto: CreateTrainingDto): Promise<any> {
 
-  @Get()
-  findAll() {
-    return this.trainingsService.findAll();
-  }
+    const newTraining = await this.trainingsService.create(createTrainingDto);
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.trainingsService.findOne(+id);
-  }
+    return {
+      statusCode: 201,
+      message: 'Utilisateur enregistré',
+      data: newTraining
+    };
+  };
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTrainingDto: UpdateTrainingDto) {
-    return this.trainingsService.update(+id, updateTrainingDto);
-  }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.trainingsService.remove(+id);
-  }
+
+
+  // @Get()
+  // async findAll() {
+  //   return this.trainingsService.findAll();
+
+  // }
+
+  // @Get(':id')
+  // async findById(@Param('id') id: string) {
+  //   return this.trainingsService.findById(+id);
+  // }
+
+  // @Patch(':id')
+  // async update(@Param('id') id: string, @Body() updateTrainingDto: UpdateTrainingDto) {
+  // }
+
+  // @Delete(':id')
+  // remove(@Param('id') id: string): Promise<void> {
+  //   return this.trainingsService.delete(+id);
+  // }
 }

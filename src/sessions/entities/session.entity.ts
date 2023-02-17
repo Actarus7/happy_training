@@ -1,6 +1,6 @@
 import { Exercise } from "src/exercises/entities/exercise.entity";
 import { Training } from "src/trainings/entities/training.entity";
-import { BaseEntity, Column, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export class Session extends BaseEntity {
     @PrimaryGeneratedColumn()
