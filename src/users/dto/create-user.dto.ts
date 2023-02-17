@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Transform } from "class-transformer";
 import { IsBoolean, IsEmail, IsOptional, IsString, IsUrl, Length } from "class-validator";
 
 export class CreateUserDto {
@@ -30,6 +31,7 @@ export class CreateUserDto {
     @ApiProperty()
     @IsString()
     @Length(1)
+    //@Transform()
     city: string;
 
     @ApiProperty()

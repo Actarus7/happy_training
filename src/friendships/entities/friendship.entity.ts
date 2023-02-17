@@ -15,10 +15,12 @@ export class Friendship extends BaseEntity {
     status: boolean;
 
 
+    @ApiProperty()
     @ManyToOne(() => User, user => user.sentFriendships)
     userSender: User;
 
 
+    @ApiProperty()
     @ManyToOne(() => User, user => user.receivedFriendships)
     userReceiver: User;
 

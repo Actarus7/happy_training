@@ -56,6 +56,7 @@ export class User extends BaseEntity {
     description: string;
 
 
+    @ApiProperty({ type: () => [User] })
     @ManyToMany(() => Friendship)
     @JoinTable()
     friends: User[];
@@ -72,14 +73,17 @@ export class User extends BaseEntity {
     articles: Article[];
 
 
+
     @OneToMany(() => Comment, comment => comment.user)
     comments: Comment[]; */
 
 
+    @ApiProperty()
     @OneToMany(() => Friendship, friendship => friendship.userSender)
     sentFriendships: Friendship[];
 
 
+    @ApiProperty()
     @OneToMany(() => Friendship, friendship => friendship.userReceiver)
     receivedFriendships: Friendship[];
 
