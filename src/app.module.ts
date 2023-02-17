@@ -8,6 +8,10 @@ import { AuthModule } from './auth/auth.module';
 import { FriendshipsModule } from './friendships/friendships.module';
 import { User } from './users/entities/user.entity';
 import { Friendship } from './friendships/entities/friendship.entity';
+import { TrainingsModule } from './trainings/trainings.module';
+import { SessionsModule } from './sessions/sessions.module';
+import { ExercisesModule } from './exercises/exercises.module';
+import { ProgressionsModule } from './progressions/progressions.module';
 
 @Module({
   imports: [
@@ -25,6 +29,10 @@ import { Friendship } from './friendships/entities/friendship.entity';
     UsersModule,
     AuthModule,
     FriendshipsModule,
+    TrainingsModule,
+    SessionsModule,
+    ExercisesModule,
+    ProgressionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
