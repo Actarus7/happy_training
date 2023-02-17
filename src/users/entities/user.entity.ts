@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 import { Friendship } from "src/friendships/entities/friendship.entity";
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 
 @Entity('users')
-@Unique(['email', 'pseudo'])
+@Unique(['email', 'pseudo']) // rend les paramètres unique - renvoie une erreur serveur avec violation de la contrainte unique - obligation de gérer le cas dans le contrôleur
 export class User extends BaseEntity {
 
 
@@ -21,7 +21,7 @@ export class User extends BaseEntity {
 
 
     @ApiProperty()
-    @Exclude()
+    @Exclude() // permet d'exclure une colonne du retour de données en ajoutant un interceptor sur les routes concernées
     @Column({ type: 'varchar' })
     password: string;
 
@@ -37,7 +37,7 @@ export class User extends BaseEntity {
 
 
     @ApiProperty()
-    @Column({ type: 'string', nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     photo: string;
 
 
@@ -47,7 +47,7 @@ export class User extends BaseEntity {
 
 
     @ApiProperty()
-    @Column({ type: 'timestamp with local time zone', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     registrationDate: Date;
 
 
@@ -56,8 +56,8 @@ export class User extends BaseEntity {
     description: string;
 
 
-    @ApiProperty()
-    @Column({ nullable: true })
+    @ManyToMany(() => Friendship)
+    @JoinTable()
     friends: User[];
 
 

@@ -7,6 +7,8 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { FriendshipsModule } from './friendships/friendships.module';
+import { User } from './users/entities/user.entity';
+import { Friendship } from './friendships/entities/friendship.entity';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { FriendshipsModule } from './friendships/friendships.module';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [join(__dirname, '*', '.entity.{ts,js}')],
+      entities: [User, Friendship/* join(__dirname, '*', '.entity.{ts,js}') */],
       synchronize: true,
     }),
     UsersModule,
