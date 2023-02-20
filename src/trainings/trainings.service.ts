@@ -28,8 +28,7 @@ export class TrainingsService {
   }
 
    async update(id: number, training: Training) {
-      await Training.update(id, training);
-     return Training.findBy({id});
+    return  await Training.update(id, training);
     //`Thi s action updates a #${id} training`;*/
   }
 
