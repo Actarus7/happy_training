@@ -1,10 +1,6 @@
-Voir la table amis
-Requête fonctionnelle pour avoir la liste d'amis ?
-Refus de la demande
+Refus de la demande d'ami
 
 
-Voir pour l'ajout en favoris des trainings
-Un ajout crée une table relationnelle (MAJ des tables User et Training automatique ?)
+Voir pour l'ajout en favoris des trainings - OK
+Voir pour retirer des favoris
 
-
-Mettre le User à partir du User connecté pour la table favoriteTraining
