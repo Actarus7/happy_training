@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { User } from 'src/users/entities/user.entity';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { UpdateTrainingDto } from './dto/update-training.dto';
 import { Training } from './entities/training.entity';
@@ -33,9 +32,9 @@ export class TrainingsService {
     return undefined;
   };
 
-  async update(id: number, training: Training) {
-    await Training.update(id, training);
-    return Training.findBy({ id });
+   async update(id: number, training: Training) {
+     await Training.update(id, training);
+     return await Training.findBy({id});
     //`Thi s action updates a #${id} training`;*/
   }
 
@@ -51,8 +50,15 @@ export class TrainingsService {
 
 
   async delete(id: number) /*Promise<void>*/ {
-    return await Training.delete(id);
+    const training = await Training.findOneBy({id});
+    if (training)
+    {
+      return await training.remove();
+    }
 
+    throw new HttpException('training not found', HttpStatus.NOT_FOUND);
+  };
+    
     //`This action deletes a #${id} training`;
-  }
-}
+  } 
+

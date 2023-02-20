@@ -26,7 +26,6 @@ export class SessionsController {
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateSessionDto: UpdateSessionDto) {
     const session = new Session();
-    session.id = updateSessionDto.id;
     session.description = updateSessionDto.description;
 
     return await this.sessionsService.update(+id, updateSessionDto);
@@ -34,6 +33,6 @@ export class SessionsController {
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return this.sessionsService.remove(+id);
+    return this.sessionsService.delete(+id);
   }
 }

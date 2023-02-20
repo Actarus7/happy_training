@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { Session } from './entities/session.entity';
@@ -8,13 +8,16 @@ export class SessionsService {
   save: any;
 
   async create(createSessionDto: CreateSessionDto): Promise<Session> {
-    const session = new Session()
-    session.id = createSessionDto.id;
-    session.description = createSessionDto.description
-    await session.save()
-    return session
+    const session = new Session();
+
+    session.description = createSessionDto.description;
+    session.time = createSessionDto.time;
+
+    await session.save();
+
+    return session;
     //'This action adds a new session';
-  }
+  };
  
 
   async findAll(){
@@ -33,9 +36,17 @@ export class SessionsService {
     //`This action updates a #${id} session`;
   }
 
-  async remove(id: number){
-    await Session.delete(id);
-    
+  async delete(id: number){
+   const session = await Session.findOneBy({id});
+   {
+     
+      if (session)
+      {
+        return await session.remove();
+      }
+  
+      throw new HttpException('training not found', HttpStatus.NOT_FOUND);
+    };
     //`This action removes a #${id} session`;
   }
 }

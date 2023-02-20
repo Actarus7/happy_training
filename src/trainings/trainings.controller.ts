@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { TrainingsService } from './trainings.service';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { UpdateTrainingDto } from './dto/update-training.dto';
@@ -25,6 +25,7 @@ export class TrainingsController {
 
   @Get()
   async findAll() {
+
     return await this.trainingsService.findAll();
 
   }
@@ -50,6 +51,16 @@ export class TrainingsController {
 
   @Delete(':id')
   async remove(@Param('id') id: string) /* Promise<void>*/ {
-    return await this.trainingsService.delete(+id);
+    const training = await this.trainingsService.delete(+id);
+console.log(training);
+
+    if (training)
+      return {
+        statusCode: 200,
+        message: 'training supprimé',
+        data:training ,
+
+      };
+      throw new HttpException('training not found', HttpStatus.NOT_FOUND);
   }
 }
