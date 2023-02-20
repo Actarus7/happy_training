@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { FriendshipsModule } from './friendships/friendships.module';
 import { User } from './users/entities/user.entity';
 import { Friendship } from './friendships/entities/friendship.entity';
+import { FavoriteTrainingsModule } from './favorite-trainings/favorite-trainings.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { Friendship } from './friendships/entities/friendship.entity';
     UsersModule,
     AuthModule,
     FriendshipsModule,
+    FavoriteTrainingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

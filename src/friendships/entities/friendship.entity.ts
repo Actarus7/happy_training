@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { User } from "src/users/entities/user.entity";
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn, ManyToMany } from "typeorm";
 
 @Entity()
 export class Friendship extends BaseEntity {
@@ -23,5 +23,10 @@ export class Friendship extends BaseEntity {
     @ApiProperty()
     @ManyToOne(() => User, user => user.receivedFriendships)
     userReceiver: User;
+
+
+    @ManyToMany(() => User, user => user.friends)
+    @JoinTable()
+    users: User[];
 
 };

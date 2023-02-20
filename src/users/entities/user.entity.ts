@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
+import { FavoriteTraining } from "src/favorite-trainings/entities/favorite-training.entity";
 import { Friendship } from "src/friendships/entities/friendship.entity";
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 
@@ -56,26 +57,16 @@ export class User extends BaseEntity {
     description: string;
 
 
-    @ApiProperty({ type: () => [User] })
-    @ManyToMany(() => Friendship)
-    @JoinTable()
-    friends: User[];
-
-
-    /* @ApiProperty()
-    @Column({nullable: true})
-    trainings: Training[];
-
-
-
     // Relations
-    @OneToMany(() => Article, article => article.user)
-    articles: Article[];
+    /* @ApiProperty({ type: () => [Training] })
+    @ManyToMany(() => Training, { cascade: true })
+    @JoinTable()
+    trainings: Training[]; */
 
 
+    @OneToMany(() => FavoriteTraining, (favoriteTraining) => favoriteTraining.user)
+    favoriteTrainings: FavoriteTraining[];
 
-    @OneToMany(() => Comment, comment => comment.user)
-    comments: Comment[]; */
 
 
     @ApiProperty()
@@ -86,6 +77,17 @@ export class User extends BaseEntity {
     @ApiProperty()
     @OneToMany(() => Friendship, friendship => friendship.userReceiver)
     receivedFriendships: Friendship[];
+
+
+    /* @OneToMany(() => Article, article => article.user)
+    articles: Article[];
+
+
+
+    @OneToMany(() => Comment, comment => comment.user)
+    comments: Comment[]; */
+
+
 
 
 

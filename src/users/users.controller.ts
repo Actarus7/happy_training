@@ -98,7 +98,7 @@ export class UsersController {
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserFriendListDto): Promise<any> {
-    return this.usersService.updateFriendList(+id, updateUserDto);
+    // return this.usersService.updateFriendsList(+id, updateUserDto);
   }
 
 

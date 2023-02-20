@@ -74,11 +74,16 @@ export class UsersService {
 
 
 
-  async updateFriendList(id: number, updateUserFriendListDto: UpdateUserFriendListDto) {
+  async update(id: number, userToAdd: User) {
+    const updateUser = await User.findOneBy({ id });
 
-    await User.update(id, updateUserFriendListDto);
+    
+    updateUser.save();
 
-    return await User.findOneBy({ id });
+
+    // await User.update(id, userToAdd);
+
+    // return await User.findOneBy({ id });
 
   };
 
