@@ -18,6 +18,7 @@ Version 3
 Ajouts de programmes en favoris
 Chronos pour exercices
 Ajouts de photo de profil
+Affichage de la progression d'un Training
 
 
 

@@ -105,19 +105,6 @@ export class FriendshipsController {
     const updatedFriendship = await this.friendshipsService.update(isFriendshipExists);
 
 
-    // console.log('1',isFriendshipExists[0]);
-    /* 
-        // Ajoute le demandeur à la liste d'amis du receveur
-        const updatedReceiver = await this.usersService.updateFriendsList(isFriendshipExists[0].userReceiver.id, isFriendshipExists[0].userSender);
-    
-        console.log('2',updatedReceiver);
-    
-    
-    
-        // Ajoute le receveur à la liste d'amis du demandeur
-        const updatedSender = await this.usersService.updateFriendsList(isFriendshipExists[0].userSender.id, isFriendshipExists[0].userReceiver);
-    
-        console.log('3',updatedSender); */
 
 
 

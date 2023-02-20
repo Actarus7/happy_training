@@ -9,6 +9,7 @@ export class FavoriteTrainingsController {
 
   @Post()
   create(@Body() createFavoriteTrainingDto: CreateFavoriteTrainingDto) {
+    
     return this.favoriteTrainingsService.create(createFavoriteTrainingDto);
   };
 

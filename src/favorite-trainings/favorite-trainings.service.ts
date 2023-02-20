@@ -1,26 +1,64 @@
 import { Injectable } from '@nestjs/common';
 import { CreateFavoriteTrainingDto } from './dto/create-favorite-training.dto';
 import { UpdateFavoriteTrainingDto } from './dto/update-favorite-training.dto';
+import { FavoriteTraining } from './entities/favorite-training.entity';
+
 
 @Injectable()
 export class FavoriteTrainingsService {
-  create(createFavoriteTrainingDto: CreateFavoriteTrainingDto) {
-    return 'This action adds a new favoriteTraining';
+
+  async create(createFavoriteTrainingDto: CreateFavoriteTrainingDto) {
+
+    const newFavoriteTraining = new FavoriteTraining();
+
+    newFavoriteTraining.user = createFavoriteTrainingDto.user;
+    newFavoriteTraining.training = createFavoriteTrainingDto.training;
+
+    await newFavoriteTraining.save();
+
+    return newFavoriteTraining;
   };
 
-  findAll() {
-    return `This action returns all favoriteTrainings`;
+
+
+  /** Récupère tous les programmes ajoutés en favoris */
+  async findAll() {
+    const favoriteTrainings = await FavoriteTraining.find();
+
+    if (favoriteTrainings) {
+      return favoriteTrainings;
+    };
+
+    return undefined;
   };
 
-  findOne(id: number) {
-    return `This action returns a #${id} favoriteTraining`;
+
+
+  /** Récupère un programme ajouté en favori */
+  async findOne(id: number) {
+    const favoriteTraining = await FavoriteTraining.findOneBy({ id });
+
+    if (favoriteTraining) {
+      return favoriteTraining;
+    };
+
+    return undefined;
   };
+
+
+
 
   update(id: number, updateFavoriteTrainingDto: UpdateFavoriteTrainingDto) {
     return `This action updates a #${id} favoriteTraining`;
   };
 
-  remove(id: number) {
-    return `This action removes a #${id} favoriteTraining`;
+
+  /** Supprime un programme des favoris */
+  async remove(id: number) {
+    const deleteFavoriteTraining = await FavoriteTraining.findOneBy({ id });
+
+    await deleteFavoriteTraining.remove();
+    
+    return deleteFavoriteTraining;
   };
 };

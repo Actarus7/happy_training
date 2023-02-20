@@ -10,7 +10,7 @@ export class FavoriteTraining extends BaseEntity {
     @ManyToOne(() => User, (user) => user.favoriteTrainings)
     user: User;
 
-    /* @ManyToOne(() => Training, (training) => training.   )
-    training: Training; */
+    @ManyToOne(() => Training, (training) => training.   )
+    training: Training;
 
 };
