@@ -4,7 +4,7 @@ import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise } from './entities/exercises.entity';
 
-@Controller('exercices')
+@Controller('exercises')
 export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 
@@ -26,8 +26,7 @@ export class ExercisesController {
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateExerciseDto: UpdateExerciseDto) {
-    const exercise = new Exercise();
-    return await this.exercisesService.update(id, exercise);
+    return await this.exercisesService.update(+id, updateExerciseDto);
   }
 
   @Delete(':id')
