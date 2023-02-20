@@ -8,13 +8,16 @@ export class SessionsService {
   save: any;
 
   async create(createSessionDto: CreateSessionDto): Promise<Session> {
-    const session = new Session()
-    session.id = createSessionDto.id;
-    session.description = createSessionDto.description
-    await session.save()
-    return session
+    const session = new Session();
+
+    session.description = createSessionDto.description;
+    session.time = createSessionDto.time;
+
+    await session.save();
+
+    return session;
     //'This action adds a new session';
-  }
+  };
  
 
   async findAll(){

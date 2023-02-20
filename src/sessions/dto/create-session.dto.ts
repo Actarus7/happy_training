@@ -4,9 +4,6 @@ import { Column } from "typeorm";
 
 
 export class CreateSessionDto {
-        
-    @Column()
-    id: number;
 
     @IsNotEmpty()
     @IsString()
