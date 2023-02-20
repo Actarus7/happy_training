@@ -3,7 +3,6 @@ import { Column } from "typeorm";
 
 export class CreateTrainingDto {
 
-    @IsNotEmpty()
     @Column()
     id: number;
 

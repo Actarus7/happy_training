@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { UpdateTrainingDto } from './dto/update-training.dto';
 import { Training } from './entities/training.entity';
@@ -34,8 +34,16 @@ export class TrainingsService {
   }
 
   async delete(id: number) /*Promise<void>*/ {
-    return await Training.delete(id);
+    const training = await this.findById(id);
+
+    if (training)
+    {
+      return await training.remove();
+    }
+
+    throw new HttpException('training not found', HttpStatus.NOT_FOUND);
+  };
     
     //`This action deletes a #${id} training`;
   } 
-}
+
