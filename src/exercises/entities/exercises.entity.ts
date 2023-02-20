@@ -1,7 +1,9 @@
 import { Session } from "src/sessions/entities/session.entity";
 import { Training } from "src/trainings/entities/training.entity";
-import { BaseEntity, Column, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
+
+@Entity()
 export class Exercise extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;

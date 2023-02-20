@@ -1,7 +1,8 @@
 import { Exercise } from "src/exercises/entities/exercises.entity";
 import { Session } from "src/sessions/entities/session.entity";
-import { BaseEntity, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
+@Entity()
 export class Training extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
