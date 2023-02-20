@@ -22,19 +22,18 @@ export class TrainingsService {
     return await Training.find();
     //`This action returns all trainings`;
   }
-  async findById(id: number): Promise<Training> {
-      return await Training.findOneBy({id});
-    
+  async findById(id: number) {
+    return await Training.findOneBy({id});
   }
 
    async update(id: number, training: Training) {
-    return  await Training.update(id, training);
+     await Training.update(id, training);
+     return await Training.findBy({id});
     //`Thi s action updates a #${id} training`;*/
   }
 
   async delete(id: number) /*Promise<void>*/ {
-    const training = await this.findById(id);
-
+    const training = await Training.findOneBy({id});
     if (training)
     {
       return await training.remove();

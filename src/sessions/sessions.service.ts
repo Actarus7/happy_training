@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { Session } from './entities/session.entity';
@@ -33,9 +33,17 @@ export class SessionsService {
     //`This action updates a #${id} session`;
   }
 
-  async remove(id: number){
-    await Session.delete(id);
-    
+  async delete(id: number){
+   const session = await Session.findOneBy({id});
+   {
+     
+      if (session)
+      {
+        return await session.remove();
+      }
+  
+      throw new HttpException('training not found', HttpStatus.NOT_FOUND);
+    };
     //`This action removes a #${id} session`;
   }
 }

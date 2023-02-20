@@ -42,7 +42,6 @@ export class CreateExerciseDto {
     @Column()
     rest_time: string;
 
-    @IsNotEmpty()
     @IsString()
     @Column()
     material: string;

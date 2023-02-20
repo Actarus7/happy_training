@@ -5,7 +5,6 @@ import { Column } from "typeorm";
 
 export class CreateSessionDto {
         
-    @IsNotEmpty()
     @Column()
     id: number;
 
