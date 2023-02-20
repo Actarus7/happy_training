@@ -16,6 +16,9 @@ import { FriendshipsModule } from './friendships/friendships.module';
 import { Friendship } from './friendships/entities/friendship.entity';
 // import { FavoriteTrainingsModule } from './favorite-trainings/favorite-trainings.module';
 // import { FavoriteTraining } from './favorite-trainings/entities/favorite-training.entity';
+import { ArticlesModule } from './articles/articles.module';
+import { Article } from './articles/entities/article.entity';
+
 
 @Module({
   imports: [
@@ -27,7 +30,7 @@ import { Friendship } from './friendships/entities/friendship.entity';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Friendship, Training, Session, Exercise, /* FavoriteTraining */],
+      entities: [User, Friendship, Training, Session, Exercise, Article /* FavoriteTraining */],
       synchronize: true,
     }),
     UsersModule,
@@ -37,6 +40,7 @@ import { Friendship } from './friendships/entities/friendship.entity';
     TrainingsModule,
     SessionsModule,
     ExercisesModule,
+    ArticlesModule,
   ],
   controllers: [AppController],
   providers: [AppService]
