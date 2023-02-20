@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Training } from 'src/trainings/entities/training.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserFriendListDto } from './dto/update-user-friend-list.dto';
 import { User } from './entities/user.entity';
@@ -63,10 +64,10 @@ export class UsersService {
 
 
   async findOneById(id: number) {
-    const user = await User.findOneBy({ id });
+    const user = await User.find({ relations: { trainings: true }, where: { id: id } });
 
     if (user) {
-      return user;
+      return user[0];
     };
 
     return undefined;
@@ -77,13 +78,24 @@ export class UsersService {
   async update(id: number, userToAdd: User) {
     const updateUser = await User.findOneBy({ id });
 
-    
+
     updateUser.save();
 
 
     // await User.update(id, userToAdd);
 
     // return await User.findOneBy({ id });
+
+  };
+
+
+  // Ajoute un Training au User
+  async addToFavorites(user: User, training: Training) {
+
+    user.trainings.push(training)
+    await user.save()
+
+    return await User.findOne({ relations: { trainings: true }, where: { id: user.id } });
 
   };
 

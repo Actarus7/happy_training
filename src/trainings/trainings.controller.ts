@@ -6,7 +6,9 @@ import { Training } from './entities/training.entity';
 
 @Controller('trainings')
 export class TrainingsController {
-  constructor(private readonly trainingsService: TrainingsService) {}
+  constructor(private readonly trainingsService: TrainingsService) { }
+
+
 
   @Post()
   async create(@Body() createTrainingDto: CreateTrainingDto): Promise<any> {
@@ -19,27 +21,35 @@ export class TrainingsController {
     };
   }
 
-   @Get()
-  async findAll(){
+
+
+  @Get()
+  async findAll() {
     return await this.trainingsService.findAll();
-    
+
   }
+
+
 
   @Get(':id')
   async findById(@Param('id') id: string) {
-    return await this.trainingsService.findById(+id);
+    return await this.trainingsService.findOneById(+id);
   }
 
+
+
   @Patch(':id')
-   async update(@Param('id') id: string, @Body() updateTrainingDto: UpdateTrainingDto) {
+  async update(@Param('id') id: string, @Body() updateTrainingDto: UpdateTrainingDto) {
     const training = new Training();
     training.title = updateTrainingDto.title;
     training.description = updateTrainingDto.description;
     return await this.trainingsService.update(+id, training);
   }
 
+
+
   @Delete(':id')
   async remove(@Param('id') id: string) /* Promise<void>*/ {
     return await this.trainingsService.delete(+id);
-  } 
+  }
 }

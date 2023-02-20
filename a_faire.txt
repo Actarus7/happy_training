@@ -11,3 +11,6 @@ Refus de la demande
 
 Voir pour l'ajout en favoris des trainings
 Un ajout crée une table relationnelle (MAJ des tables User et Training automatique ?)
+
+
+Mettre le User à partir du User connecté pour la table favoriteTraining

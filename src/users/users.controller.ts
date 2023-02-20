@@ -1,17 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, ConflictException, Bind, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, ConflictException, Bind, ParseIntPipe, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserFriendListDto } from './dto/update-user-friend-list.dto';
 import * as bcrypt from 'bcrypt';
 import { ApiTags } from '@nestjs/swagger';
-import { NotFoundException } from '@nestjs/common/exceptions';
+import { BadRequestException, NotFoundException } from '@nestjs/common/exceptions';
+import { AddToFavoritesDto } from './dto/add-to-favorites.dto';
+import { TrainingsService } from 'src/trainings/trainings.service';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly trainingsService: TrainingsService) { }
 
 
   /** Création d'un nouveau User
@@ -97,9 +102,49 @@ export class UsersController {
 
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserFriendListDto): Promise<any> {
+  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserFriendListDto): Promise<any> {
     // return this.usersService.updateFriendsList(+id, updateUserDto);
   }
+
+
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/favorites')
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
+  async addToFavorites(@Param('id') id: number, @Body() addToFavorites: AddToFavoritesDto) {
+
+    // Récupère le User connecté
+    const userLogged = await this.usersService.findOneById(id);
+
+
+    // Vérifie si le Training à ajouter existe
+    const isTrainingToAdd = await this.trainingsService.findOneById(addToFavorites.training);
+
+    if (!isTrainingToAdd) {
+      throw new NotFoundException('Training Id inconnu');
+    };
+
+
+
+    // Vérifie que le Training n'est pas déjà un favori du User en comparant la liste des favoris du User avec le Training à ajouter
+    const allUserFavorites = userLogged.trainings.map(elm => elm.id);
+
+    if (allUserFavorites.includes(isTrainingToAdd.id)) {
+      throw new BadRequestException('Programme déjà ajouté aux favoris');
+    };
+
+    // Ajoute le User au Training
+    const addUserToTraining = await this.trainingsService.addUserToTraining(isTrainingToAdd, userLogged);
+
+    // Ajoute le Training au User
+    const addTrainingToFavoritesUser = await this.usersService.addToFavorites(userLogged, isTrainingToAdd);
+
+    return {
+      statusCode: 201,
+      message: 'Programme ajouté aux favoris',
+      data: addTrainingToFavoritesUser
+    };
+  };
 
 
 

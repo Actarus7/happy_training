@@ -30,13 +30,13 @@ export class FriendshipsController {
 
 
     // Création d'une demande d'amitié
-    const newfriendship = await this.friendshipsService.create(userSender, userReceiver);
+    /* const newfriendship = await this.friendshipsService.create(userSender, userReceiver);
 
     return {
       statusCode: 201,
       message: 'Utilisateur enregistré',
       data: newfriendship
-    };
+    }; */
   };
 
 
