@@ -8,7 +8,7 @@ Création d'un Training/Session/Excercise (par un Admin) - reste partie Admin
 
 
 Version 2
-Création d'un Article(soumis à validation d'un Admin) - 
+Création d'un Article (soumis à validation d'un Admin) - 
 Création d'un Comment (partie Article et/ou Programme) - 
 Imports des vidéos/photos exemples
 
@@ -25,10 +25,10 @@ Possibilité de liker un Article ou un Programme/Exercice
 
 Version 4
 Affichage de la progression d'un Training
-Ajouts de membres en amis
-Messagerie interne
+Ajouts de membres en amis - OK
 
 
 
 Version 5
+Messagerie interne
 Ajouts de musiques
