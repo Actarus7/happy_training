@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserFriendListDto } from './dto/update-user-friend-list.dto';
 import * as bcrypt from 'bcrypt';
 import { ApiTags } from '@nestjs/swagger';
-import { BadRequestException, NotFoundException } from '@nestjs/common/exceptions';
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common/exceptions';
 import { AddToFavoritesDto } from './dto/add-to-favorites.dto';
 import { TrainingsService } from 'src/trainings/trainings.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -17,6 +17,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly trainingsService: TrainingsService) { }
+
 
 
   /** Création d'un nouveau User
@@ -61,6 +62,7 @@ export class UsersController {
 
 
 
+
   /** Récupère la liste de TOUS les Users inscrits
    * 
    * @returns renvoie la liste de tous les Users inscrits (sans les passwords)
@@ -73,6 +75,7 @@ export class UsersController {
     return users;
 
   };
+
 
 
 
@@ -100,14 +103,12 @@ export class UsersController {
 
 
 
-
-  @Patch(':id')
-  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserFriendListDto): Promise<any> {
-    // return this.usersService.updateFriendsList(+id, updateUserDto);
-  }
-
-
-
+  /** Permet d'ajouter un Training en favori   
+   * Ajoute le Training dans le User et le User dans le Training   
+   * Nécessite :
+   * * d'être connecté/enregistré
+   * * que le Training à ajouter existe et ne soit pas déjà en favori
+   */
   @UseGuards(JwtAuthGuard)
   @Patch(':id/favorites')
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
@@ -154,10 +155,20 @@ export class UsersController {
    * @param id Id du User à supprimer (inscrit dans la barre url)
    * @returns renvoie les données du User supprimé
    */
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @Bind(Param('id', new ParseIntPipe())) // renvoie une erreur si le paramètre n'est pas un number
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
-  async remove(@Param('id') id: string): Promise<any> {
+  async remove(@Param('id') id: string, @Request() req): Promise<any> {
+
+
+    // Vérifie que le User connecté est un admin
+    const isUserLoggedAdmin = (await this.usersService.findOneById(req.user.id)).admin;
+
+    if (!isUserLoggedAdmin) {
+      throw new ForbiddenException("Vous ne disposez pas des droits nécessaires pour supprimer un utilisateur");
+    };
+
 
     // Vérifie que le User à supprimer existe
     const isUserExists = await this.usersService.findOneById(+id);
@@ -177,4 +188,12 @@ export class UsersController {
     };
   };
 
+
+
+
+  // INUTILE POUR LE MOMENT
+  // @Patch(':id')
+  // async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserFriendListDto): Promise<any> {
+  //   // return this.usersService.updateFriendsList(+id, updateUserDto);
+  // }
 };

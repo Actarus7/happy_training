@@ -1,9 +1,3 @@
-Patch/Update partie User
-Documentation Entity User
-Documentation UserServices
-Documentation Dto partie User
-
-
 Voir la table amis
 Requête fonctionnelle pour avoir la liste d'amis ?
 Refus de la demande
