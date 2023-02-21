@@ -5,7 +5,7 @@ import { Session } from './entities/session.entity';
 
 @Injectable()
 export class SessionsService {
-  save: any;
+
 
   async create(createSessionDto: CreateSessionDto): Promise<Session> {
     const session = new Session();
@@ -18,35 +18,38 @@ export class SessionsService {
     return session;
     //'This action adds a new session';
   };
- 
 
-  async findAll(){
-    return await Session.find()
-    //`This action returns all sessions`;
-  }
+
+  async findAll() {
+    return await Session.find();
+  };
+
 
   async findById(id: number) {
-    return await Session.findOneBy({id});
-    //`This action returns a #${id} session`;
-  }
+    return await Session.findOneBy({ id });
+  };
 
-  async update(id: number, updateSessionDto: UpdateSessionDto) {
-    await Session.update(id, updateSessionDto);
-    return Session.findOneBy({id})
-    //`This action updates a #${id} session`;
-  }
 
-  async delete(id: number){
-   const session = await Session.findOneBy({id});
-   {
-     
-      if (session)
-      {
-        return await session.remove();
-      }
-  
-      throw new HttpException('training not found', HttpStatus.NOT_FOUND);
+  async update(session: Session, updateSessionDto: UpdateSessionDto) {
+
+    session.time = updateSessionDto.time;
+    session.description = updateSessionDto.description;
+
+    await session.save();
+
+    return await Session.findOneBy({ id: session.id });
+  };
+
+
+  async delete(id: number) {
+    const session = await Session.findOneBy({ id });
+
+
+    if (session) {
+      await session.remove();
+      return session;
     };
-    //`This action removes a #${id} session`;
-  }
+
+    throw new HttpException('session not found', HttpStatus.NOT_FOUND);
+  };
 }

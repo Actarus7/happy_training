@@ -11,7 +11,8 @@ export class TrainingsController {
   constructor(
     private readonly trainingsService: TrainingsService,
     private readonly usersService: UsersService
-  ) { }
+  )
+  { };
 
 
   /** Création d'un nouveau Training   
@@ -48,47 +49,67 @@ export class TrainingsController {
 
     return await this.trainingsService.findAll();
 
-  }
+  };
 
 
 
   @Get(':id')
   async findById(@Param('id') id: string) {
-    return await this.trainingsService.findOneById(+id);
-  }
+    const training = await this.trainingsService.findOneById(+id);
+    if (!training) {
+      throw new NotFoundException(`Training with id ${id} not found.`);
+      //return await this.trainingsService.findOneById(+id);
+    }
+    return training;
+  };
 
 
-
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateTrainingDto: UpdateTrainingDto) {
-    const training = new Training();
+  async update(@Param('id') id: string, @Body() updateTrainingDto: UpdateTrainingDto , @Request()  req): Promise<any> {
+  // Vérifie que le User connecté est un admin
+    
+  const userLoggedAdmin = (await this.usersService.findOneById(req.user.id)).admin;
+  if (!userLoggedAdmin) {
+    throw new ForbiddenException("Vous devez être admin pour modifier un training");
+  }; 
 
-    training.title = updateTrainingDto.title;
-    training.description = updateTrainingDto.description;
+    // Création d'une nouveau training
+  const training = new Training();
 
+  training.title = updateTrainingDto.title;
+  training.description = updateTrainingDto.description;
 
-    return await this.trainingsService.update(+id, training);
+   await this.trainingsService.update(+id, training);
 
-    /*  if (!training) {
-        throw new NotFoundException(`Training with id ${id} not found.`);
-       }
-      return this.trainingsService.save(training);
-      */
-  }
+    if (!training) {
+      throw new NotFoundException(`Training with id ${id} not found.`);
+    };
+    return training;
+    
+};
 
+ 
+@UseGuards(JwtAuthGuard)
+@Delete(':id')
+async remove(@Param('id') id: string, @Request() req) /* Promise<void>*/ {
+  
+  // Vérifie que le User connecté est un admin
+  const userLoggedAdmin = (await this.usersService.findOneById(req.user.id)).admin;
 
+  if (!userLoggedAdmin) {
+    throw new ForbiddenException("Vous devez être admin pour supprimer un training");
+  };
 
-  @Delete(':id')
-  async remove(@Param('id') id: string) /* Promise<void>*/ {
-    const training = await this.trainingsService.delete(+id);
+  const training = await this.trainingsService.delete(+id);
 
-    if (training)
-      return {
-        statusCode: 200,
-        message: 'training supprimé',
-        data: training,
+  if (training)
+    return {
+      statusCode: 200,
+      message: 'training supprimé',
+      data: training,
 
-      };
-    throw new HttpException('training not found', HttpStatus.NOT_FOUND);
-  }
-}
+    };
+  throw new HttpException('training not found', HttpStatus.NOT_FOUND);
+};
+};

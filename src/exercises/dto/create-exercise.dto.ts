@@ -1,56 +1,51 @@
-import { IsNotEmpty,IsOptional, IsString } from "class-validator";
-import { Column } from "typeorm";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl } from "class-validator";
 
 export class CreateExerciseDto {
-    
+
     @IsNotEmpty()
-    @Column()
-    id: number;
+    @IsNumber()
+    trainingId: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    sessionId: number;
 
     @IsNotEmpty()
     @IsString()
-    @Column()
     title: string;
 
     @IsNotEmpty()
     @IsString()
-    @Column()
     content: string;
 
     @IsNotEmpty()
     @IsString()
-    @Column()
     time: string;
 
     @IsNotEmpty()
     @IsString()
-    @Column()
     beginner: string;
 
     @IsNotEmpty()
     @IsString()
-    @Column()
     medium: string;
 
     @IsNotEmpty()
     @IsString()
-    @Column()
     expert: string;
 
     @IsNotEmpty()
     @IsString()
-    @Column()
     rest_time: string;
 
     @IsString()
-    @Column()
     material: string;
 
+    @IsString()
     @IsOptional()
-    @Column()
     video: string;
 
+    @IsString()
     @IsOptional()
-    @Column()
     image: string;
 }

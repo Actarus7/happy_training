@@ -27,13 +27,11 @@ export class TrainingsService {
     return await Training.find();
     //`This action returns all trainings`;
   }
+
   async findOneById(id: number) {
-    const training = await this.trainingsSservice.findOne(id);
-    await Training.findOneBy({ id });
-    /* if (!training) {
-      throw new NotFoundException(`Training with id ${id} not found.`);
-    } */
-    return training;
+    
+    return await Training.findOneBy({ id });
+   
   }
 
   async update(id: number, training: Training) {
