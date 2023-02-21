@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, Logger, UseGuards } from '@nestjs/common';
 import { ArticlesService } from 'src/articles/articles.service';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -35,7 +36,7 @@ export class CommentsController {
     throw new NotFoundException('Comment not found');
   }
 
-
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateCommentDto: UpdateCommentDto) {
 
@@ -59,7 +60,9 @@ export class CommentsController {
  * @param id Id du Comment à supprimer
  * @returns Retourne le Comment supprimé
  */
-  @Delete(':id')
+
+@UseGuards(JwtAuthGuard)  
+@Delete(':id')
   async remove(@Param('id') id: number) {
     Logger.log('delete a comment', 'commentsController');
     //verifie si le Comment existe
@@ -81,7 +84,8 @@ export class CommentsController {
  * * d'être connecté/enregistré
  * * que l'Article associé existe
  */
-  @Post()
+@UseGuards(JwtAuthGuard) 
+@Post()
   async createComment(@Body() createCommentDto: CreateCommentDto) {
 
 

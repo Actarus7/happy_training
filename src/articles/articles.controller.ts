@@ -52,7 +52,7 @@ export class ArticlesController {
   };
 
 
-
+  @UseGuards(JwtAuthGuard)
   @Patch(':articleId')
   async update(
     @Param('articleId') articleId,
@@ -67,6 +67,8 @@ export class ArticlesController {
     throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
   };
 
+
+  @UseGuards(JwtAuthGuard)
   @Patch('/published/:articleId')
   async publishedArticle(
     @Param('articleId') articleId: number) {
@@ -81,13 +83,15 @@ export class ArticlesController {
   };
 
 
-
-
+/**Pour effacer un article, il est necessaire:
+ * d'être connecté/enregistré
+ */
+  @UseGuards(JwtAuthGuard)
   @Delete(':articleId')
   async remove(
     @Param('articleId') articleId) {
     Logger.log('remove an article', 'ArticlesController');
-
+/**verifie que l'article existe */
     const article = await this.articlesService.removeArticle(articleId);
 
     if (article)
@@ -96,13 +100,9 @@ export class ArticlesController {
     throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
   };
 
-  /* @Post('comment')
-  async addComment(@Param('articleId') articleId, @Body() createCommentDto: CreateCommentDto){
-    const comment = await this.articlesService.addCommentToArticle(articleId, createCommentDto);
-    if(comment)
-    return comment;
-  } */
+ 
+  } 
 
-};
+
 
 
