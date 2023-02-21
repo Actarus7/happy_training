@@ -54,7 +54,7 @@ export class TrainingsController {
 
   @Get(':id')
   async findById(@Param('id') id: string) {
-    return await this.trainingsService.findById(+id);
+    return await this.trainingsService.findOneById(+id);
   }
 
 
@@ -62,8 +62,11 @@ export class TrainingsController {
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateTrainingDto: UpdateTrainingDto) {
     const training = new Training();
+
     training.title = updateTrainingDto.title;
     training.description = updateTrainingDto.description;
+
+
     return await this.trainingsService.update(+id, training);
 
     /*  if (!training) {

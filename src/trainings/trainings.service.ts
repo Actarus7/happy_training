@@ -27,7 +27,7 @@ export class TrainingsService {
     return await Training.find();
     //`This action returns all trainings`;
   }
-  async findById(id: number) {
+  async findOneById(id: number) {
     const training = await this.trainingsSservice.findOne(id);
     await Training.findOneBy({ id });
     /* if (!training) {

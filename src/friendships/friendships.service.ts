@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
 import { CreateFriendshipDto } from './dto/create-friendship.dto';
-import { UpdateFriendshipDto } from './dto/update-friendship.dto';
+// import { UpdateFriendshipDto } from './dto/update-friendship.dto';
 import { Friendship } from './entities/friendship.entity';
 
 @Injectable()
