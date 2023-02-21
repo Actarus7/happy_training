@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Training } from 'src/trainings/entities/training.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserFriendListDto } from './dto/update-user-friend-list.dto';
 import { User } from './entities/user.entity';
 
 
@@ -130,11 +129,11 @@ export class UsersService {
 
 
 
-  /*  // INUTILE
-   async update(id: number, userToAdd: User) {
-     const updateUser = await User.findOneBy({ id });
+/*  // INUTILE
+ async update(id: number, userToAdd: User) {
+   const updateUser = await User.findOneBy({ id });
  
-     updateUser.save();
+   updateUser.save();
  
-   }; */
+ }; */
 
