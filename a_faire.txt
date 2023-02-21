@@ -1,4 +1,2 @@
-Voir pour retirer des favoris (update User.trainings et Training.users)
-
-
 Documenter le code + API
+
