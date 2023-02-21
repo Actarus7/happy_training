@@ -1,7 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
-import { CreateFriendshipDto } from './dto/create-friendship.dto';
-import { UpdateFriendshipDto } from './dto/update-friendship.dto';
 import { Friendship } from './entities/friendship.entity';
 
 @Injectable()
@@ -22,10 +20,7 @@ export class FriendshipsService {
 
 
 
-  findAll() {
-    return `This action returns all friendships`;
-  }
-
+  /** Récupère la liste de tous les amis d'un User (pseudos) */
   async findAllFriends(userId: number, pseudoUser: string) {
 
     const friendships = await Friendship.find({
@@ -64,7 +59,7 @@ export class FriendshipsService {
 
 
 
-  // Récupère une demande d'amitié par le demandeur et le receveur
+  /** Récupère une demande d'amitié par le demandeur et le receveur */ 
   async findAllByIds(sender: User, receiver: User): Promise<Friendship> {
 
     const friendship = await Friendship.findOne({
@@ -107,7 +102,19 @@ export class FriendshipsService {
 
 
 
-  remove(id: number) {
-    return `This action removes a #${id} friendship`;
-  }
-}
+/** Supprime une demande d'amitié (Refuser) */
+  async remove(id: number) {
+
+    const deleteFriendship = await Friendship.findOneBy({id});
+
+    deleteFriendship.remove();
+
+    if (deleteFriendship) {
+      return deleteFriendship;
+    };
+
+    return undefined;
+  };
+
+
+};

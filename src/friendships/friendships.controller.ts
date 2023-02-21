@@ -72,11 +72,6 @@ export class FriendshipsController {
 
 
 
-  @Get()
-  findAll() {
-    return this.friendshipsService.findAll();
-  }
-
 
 
   /** Récupération d'une demande d'amitié par son Id */
@@ -97,6 +92,8 @@ export class FriendshipsController {
       data: friendship
     };
   };
+
+
 
 
 
@@ -169,7 +166,7 @@ export class FriendshipsController {
 
 
     return {
-      statusCode: 201,
+      statusCode: 200,
       message: "Demande d'ami acceptée",
       data: updatedFriendship
     };
@@ -179,8 +176,39 @@ export class FriendshipsController {
 
 
 
+
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.friendshipsService.remove(+id);
-  }
-}
+  @Bind(Param('id', new ParseIntPipe())) // renvoie une erreur si le paramètre n'est pas un number
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
+  async refuseFriendship(@Param('id') id: number, @Request() req) {
+
+    // Vérifie que la demande d'amitié existe
+    const isFriendshipExists = await this.friendshipsService.findOneById(+id);
+
+    if (!isFriendshipExists) {
+      throw new NotFoundException('Friendship Id inconnu');
+    };
+
+
+    // Vérifie que le User connecté est bien le receveur de la demande d'amitié
+    if (isFriendshipExists.userReceiver.id !== req.user.id) {
+      throw new ForbiddenException("Vous ne pouvez pas refuser cette demande d'ami car vous n'êtes pas le receveur");
+    };
+
+
+
+    // Suppression de la demande (refus)
+    const deletedFriendship = await this.friendshipsService.remove(+id);
+
+
+    return {
+      statusCode: 200,
+      message: "Demande d'ami supprimée",
+      data: deletedFriendship
+    };
+  };
+
+
+
+};
