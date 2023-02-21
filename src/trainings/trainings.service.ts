@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { UpdateTrainingDto } from './dto/update-training.dto';
@@ -42,6 +42,8 @@ export class TrainingsService {
   }
 
 
+
+  /** Ajoute un User au Training */
   async addUserToTraining(training: Training, user: User) {
     training.users.push(user);
     await training.save();
@@ -50,6 +52,36 @@ export class TrainingsService {
   };
 
 
+
+  /** Supprime un User du Training */
+  async removeUserFromTraining(trainingId: number, user: User) {
+
+    // Vérifie que le Training existe
+    const training = await Training.findOne({ relations: { users: true }, where: { id: trainingId } });
+    // console.log(training);
+
+
+    if (!training) {
+      throw new NotFoundException("Training Id inconnu");
+    };
+
+
+    // Crée un nouveau tableau de Users sans le User à supprimer
+    const newUsersList = training.users.map(userr => {
+      if (userr.id !== user.id) {
+        return userr;
+      };
+    });
+
+
+    // Remplace le tableau de Users du Training par le nouveau tableau
+    training.users = newUsersList;
+
+    training.save();
+
+    return training;
+
+  };
 
 
   async delete(id: number) /*Promise<void>*/ {

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Training } from 'src/trainings/entities/training.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserFriendListDto } from './dto/update-user-friend-list.dto';
 import { User } from './entities/user.entity';
 
 
@@ -9,7 +8,8 @@ import { User } from './entities/user.entity';
 export class UsersService {
 
 
-  async create(createUserDto: CreateUserDto, hash: string) {
+  /** Crée un nouveau User */
+  async create(createUserDto: CreateUserDto, hash: string): Promise<User> {
     const newUser = new User();
 
     newUser.pseudo = createUserDto.pseudo;
@@ -27,7 +27,8 @@ export class UsersService {
 
 
 
-  async findAll() {
+  /** Récupère tous les Users */
+  async findAll(): Promise<User[]> {
     const users = await User.find();
 
     if (users.length > 0) {
@@ -39,7 +40,8 @@ export class UsersService {
 
 
 
-  async findOneByPseudo(pseudo: string) {
+  /** Récupère un User par son pseudo */
+  async findOneByPseudo(pseudo: string): Promise<User> {
     const user = await User.findOne({ where: { pseudo: pseudo } });
 
     if (user) {
@@ -51,7 +53,8 @@ export class UsersService {
 
 
 
-  async findOneByEmail(email: string) {
+  /** Récupère un User par son email */
+  async findOneByEmail(email: string): Promise<User> {
     const user = await User.findOne({ where: { email: email } });
 
     if (user) {
@@ -63,7 +66,8 @@ export class UsersService {
 
 
 
-  async findOneById(id: number) {
+  /** Récupère un User par son Id */
+  async findOneById(id: number): Promise<User> {
     const user = await User.find({ relations: { trainings: true }, where: { id: id } });
 
     if (user) {
@@ -75,22 +79,8 @@ export class UsersService {
 
 
 
-  async update(id: number, userToAdd: User) {
-    const updateUser = await User.findOneBy({ id });
-
-
-    updateUser.save();
-
-
-    // await User.update(id, userToAdd);
-
-    // return await User.findOneBy({ id });
-
-  };
-
-
-  // Ajoute un Training au User
-  async addToFavorites(user: User, training: Training) {
+  /** Ajoute un Training au User */
+  async addToFavorites(user: User, training: Training): Promise<User> {
 
     user.trainings.push(training)
     await user.save()
@@ -101,7 +91,28 @@ export class UsersService {
 
 
 
-  async remove(id: number) {
+  /** Supprime un Training d'un User */
+  async removeFromFavorites(user: User, trainingId: number): Promise<User> {
+
+    // Crée un nouveau tableau de Trainings sans le Training à supprimer
+    const newTrainingsList = user.trainings.map(training => {
+      if (training.id !== trainingId) {
+        return training;
+      };
+    });
+
+    // Remplace le tableau de Users du Training par le nouveau tableau
+    user.trainings = newTrainingsList;
+
+    user.save();
+
+    return user;
+  };
+
+
+
+  /** Supprime un User */
+  async remove(id: number): Promise<User> {
     const deleteUser = await User.findOneBy({ id });
 
     await deleteUser.remove();
@@ -113,4 +124,16 @@ export class UsersService {
     return undefined;
   };
 
+
 };
+
+
+
+/*  // INUTILE
+ async update(id: number, userToAdd: User) {
+   const updateUser = await User.findOneBy({ id });
+ 
+   updateUser.save();
+ 
+ }; */
+

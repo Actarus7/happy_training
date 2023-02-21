@@ -1,13 +1,13 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, ConflictException, Bind, ParseIntPipe, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserFriendListDto } from './dto/update-user-friend-list.dto';
 import * as bcrypt from 'bcrypt';
 import { ApiTags } from '@nestjs/swagger';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common/exceptions';
 import { AddToFavoritesDto } from './dto/add-to-favorites.dto';
 import { TrainingsService } from 'src/trainings/trainings.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RemoveFromFavoritesDto } from './dto/remove-from-favorites.dto';
 
 
 
@@ -21,11 +21,11 @@ export class UsersController {
 
 
   /** Création d'un nouveau User
-   * * pseudo unique
-   * * email unique
-   * * hashage du password
+   * * Pseudo unique
+   * * Email unique
+   * * Hashage du password
    * @param createUserDto Dto contenant les données de la requête (Insomnia par exemple)
-   * @returns renvoie les data du nouveau User
+   * @returns Renvoie les data du nouveau User
    */
   @Post('register')
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
@@ -68,7 +68,7 @@ export class UsersController {
    * @returns renvoie la liste de tous les Users inscrits (sans les passwords)
    */
   @Get()
-  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
   async findAll(): Promise<any> {
     const users = await this.usersService.findAll();
 
@@ -103,13 +103,18 @@ export class UsersController {
 
 
 
+
   /** Permet d'ajouter un Training en favori   
-   * Ajoute le Training dans le User et le User dans le Training   
-   * Nécessite :
-   * * d'être connecté/enregistré
-   * * que le Training à ajouter existe et ne soit pas déjà en favori
-   */
-  @UseGuards(JwtAuthGuard)
+  * Ajoute le Training dans le User et le User dans le Training   
+  * Nécessite :
+  * * d'être connecté/enregistré
+  * * que le Training à ajouter existe et ne soit pas déjà en favori
+  * 
+  * @param id Id du User connecté
+  * @param addToFavorites Id du Training à ajouter
+  * @returns Retourne le User avec le nouveau Training en favori
+  */
+  @UseGuards(JwtAuthGuard) // Authentification du User
   @Patch(':id/favorites')
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
   async addToFavorites(@Param('id') id: number, @Body() addToFavorites: AddToFavoritesDto) {
@@ -149,13 +154,59 @@ export class UsersController {
 
 
 
+
+  /** Permet d'ajouter un Training en favori   
+  * Ajoute le Training dans le User et le User dans le Training   
+  * Nécessite :
+  * * d'être connecté/enregistré
+  * * que le Training à ajouter existe et ne soit pas déjà en favori
+  * 
+  * @param id Id du User connecté
+  * @param removeFromFavorites Id du Training à retirer
+  * @returns Retourne le User complet pour vérifier que le Training a été retiré
+  */
+  @UseGuards(JwtAuthGuard) // Authentification du User
+  @Patch(':id/favorites/remove')
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
+  async removeFromFavorites(@Param('id') id: number, @Body() removeFromFavorites: RemoveFromFavoritesDto) {
+
+    // Récupère le User connecté
+    const userLogged = await this.usersService.findOneById(id);
+
+
+
+    // Vérifie que le Training à supprimer est bien un favori du User
+    if (!(userLogged.trainings.map(training => training.id).includes(removeFromFavorites.training))) {
+      throw new NotFoundException('Training inconnu dans la liste de vos favoris');
+    };
+
+
+
+    // Supprime le User du Training
+    const removeUserFromTraining = await this.trainingsService.removeUserFromTraining(removeFromFavorites.training, userLogged);
+
+    // Supprime le Training du User
+    const removeTrainingFromFavoritesUser = await this.usersService.removeFromFavorites(userLogged, removeFromFavorites.training);
+
+    return {
+      statusCode: 201,
+      message: 'Programme retiré des favoris',
+      data: removeTrainingFromFavoritesUser
+    };
+  };
+
+
+
+
+
   /** Suppression d'un User   
    * Nécessite: 
    * * d'être admin (et donc connecté/enregistré)
+   * 
    * @param id Id du User à supprimer (inscrit dans la barre url)
    * @returns renvoie les données du User supprimé
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard) // Authentification du User
   @Delete(':id')
   @Bind(Param('id', new ParseIntPipe())) // renvoie une erreur si le paramètre n'est pas un number
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
@@ -191,9 +242,12 @@ export class UsersController {
 
 
 
-  // INUTILE POUR LE MOMENT
+
+};
+
+
+// INUTILE POUR LE MOMENT
   // @Patch(':id')
   // async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserFriendListDto): Promise<any> {
   //   // return this.usersService.updateFriendsList(+id, updateUserDto);
   // }
-};

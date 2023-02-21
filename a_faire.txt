@@ -1,10 +1,2 @@
-Refuser une demande d'ami (delete)
-
-
-Voir pour l'ajout en favoris des trainings - OK
-
-
-Voir pour retirer des favoris (update User.trainings et Training.users)
-
-
 Documenter le code + API
+
