@@ -1,13 +1,13 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, ConflictException, Bind, ParseIntPipe, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserFriendListDto } from './dto/update-user-friend-list.dto';
 import * as bcrypt from 'bcrypt';
 import { ApiTags } from '@nestjs/swagger';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common/exceptions';
 import { AddToFavoritesDto } from './dto/add-to-favorites.dto';
 import { TrainingsService } from 'src/trainings/trainings.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RemoveFromFavoritesDto } from './dto/remove-from-favorites.dto';
 
 
 
@@ -103,6 +103,7 @@ export class UsersController {
 
 
 
+
   /** Permet d'ajouter un Training en favori   
    * Ajoute le Training dans le User et le User dans le Training   
    * Nécessite :
@@ -146,6 +147,53 @@ export class UsersController {
       data: addTrainingToFavoritesUser
     };
   };
+
+
+
+
+
+
+  /** Permet d'ajouter un Training en favori   
+  * Ajoute le Training dans le User et le User dans le Training   
+  * Nécessite :
+  * * d'être connecté/enregistré
+  * * que le Training à ajouter existe et ne soit pas déjà en favori
+  * 
+  * @param id Id du User connecté
+  * @param removeFromFavorites Id du Training à retirer
+  * @returns Retourne le User complet pour vérifier que le Training a été retiré
+  */
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/favorites/remove')
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
+  async removeFromFavorites(@Param('id') id: number, @Body() removeFromFavorites: RemoveFromFavoritesDto) {
+
+    // Récupère le User connecté
+    const userLogged = await this.usersService.findOneById(id);
+
+
+
+    // Vérifie que le Training à supprimer est bien un favori du User
+    if (!(userLogged.trainings.map(training => training.id).includes(removeFromFavorites.training))) {
+      throw new NotFoundException('Training inconnu dans la liste de vos favoris');
+    };
+
+
+
+    // Supprime le User du Training
+    const removeUserFromTraining = await this.trainingsService.removeUserFromTraining(removeFromFavorites.training, userLogged);
+
+    // Supprime le Training du User
+    const removeTrainingFromFavoritesUser = await this.usersService.removeFromFavorites(userLogged, removeFromFavorites.training);
+
+    return {
+      statusCode: 201,
+      message: 'Programme retiré des favoris',
+      data: removeTrainingFromFavoritesUser
+    };
+  };
+
+
 
 
 

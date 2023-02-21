@@ -78,18 +78,13 @@ export class UsersService {
   async update(id: number, userToAdd: User) {
     const updateUser = await User.findOneBy({ id });
 
-
     updateUser.save();
-
-
-    // await User.update(id, userToAdd);
-
-    // return await User.findOneBy({ id });
 
   };
 
 
-  // Ajoute un Training au User
+
+  /** Ajoute un Training au User */
   async addToFavorites(user: User, training: Training) {
 
     user.trainings.push(training)
@@ -98,6 +93,28 @@ export class UsersService {
     return await User.findOne({ relations: { trainings: true }, where: { id: user.id } });
 
   };
+
+
+
+  /** Supprime un Training d'un User */
+  async removeFromFavorites(user: User, trainingId: number) {
+
+    // Crée un nouveau tableau de Trainings sans le Training à supprimer
+    const newTrainingsList = user.trainings.map(training => {
+      if (training.id !== trainingId) {
+        return training;
+      };
+    });
+
+    // Remplace le tableau de Users du Training par le nouveau tableau
+    user.trainings = newTrainingsList;
+
+    user.save();
+
+    return user;
+  };
+
+
 
 
 
