@@ -1,5 +1,6 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { TypeArticle } from "src/types/enumTypeArticle";
+import { Comment } from "src/comments/entities/comment.entity";
 
 
 
@@ -34,8 +35,10 @@ export class Article extends BaseEntity {
 
 
     @Column({ type: 'int', default: 0 })
-    likes: number;//ajouter des likes
+    likes: number;//ajouter des likes***
 
-
+    @OneToMany(type => Comment, comment => comment.article)
+    comments: Comment[];
 
 };
+

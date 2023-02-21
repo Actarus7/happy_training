@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Comment } from 'src/comments/entities/comment.entity';
 import { Repository } from 'typeorm';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -10,7 +11,7 @@ export class ArticlesService {
 
 
   async getArticles() {
-    return await Article.find();
+    return await Article.find({relations: ['comments']});
   };
 
 
@@ -25,6 +26,7 @@ export class ArticlesService {
 
   /** Création d'un nouvel article */
   async createArticle(createArticleDto: CreateArticleDto) {
+    
     const newArticle = new Article();
 
     newArticle.body = createArticleDto.body;
@@ -72,5 +74,10 @@ export class ArticlesService {
 
     return deleteArticle;
   };
+
+  async addCommentToArticle(articleId: number, comment: Comment) {
+    return `This action adds a #${comment} comment to a #${articleId} article`;
+  }
+
 
 };

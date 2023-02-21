@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Logger, HttpStatus, Put } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions';
+import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -92,4 +93,13 @@ export class ArticlesController {
     throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
   };
 
+  /* @Post('comment')
+  async addComment(@Param('articleId') articleId, @Body() createCommentDto: CreateCommentDto){
+    const comment = await this.articlesService.addCommentToArticle(articleId, createCommentDto);
+    if(comment)
+    return comment;
+  } */
+  
 };
+
+
