@@ -54,7 +54,7 @@ export class TrainingsController {
 
   @Get(':id')
   async findById(@Param('id') id: string) {
-    return await this.trainingsService.findOneById(+id);
+    return await this.trainingsService.findById(+id);
   }
 
 
