@@ -44,7 +44,7 @@ export class User extends BaseEntity {
 
 
     @ApiProperty()
-    @Column({ type: 'varchar' })
+    @Column({ type: 'varchar', nullable: true })
     city: string;
 
 
@@ -65,12 +65,6 @@ export class User extends BaseEntity {
     trainings: Training[];
 
 
-
-    // /* @OneToMany(() => FavoriteTraining, (favoriteTraining) => favoriteTraining.user)
-    // favoriteTrainings: FavoriteTraining[]; */
-
-
-
     @ApiProperty()
     @OneToMany(() => Friendship, friendship => friendship.userSender)
     sentFriendships: Friendship[];
@@ -89,11 +83,6 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Comment, comment => comment.user)
     comments: Comment[]; */
-
-
-
-
-
 
 
 
