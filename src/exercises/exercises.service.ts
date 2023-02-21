@@ -1,45 +1,53 @@
-import { Body, HttpException, HttpStatus, Injectable, Param, Patch, Session } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Training } from 'src/trainings/entities/training.entity';
+import { Session } from 'src/sessions/entities/session.entity';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise } from './entities/exercises.entity';
 
 @Injectable()
 export class ExercisesService {
-  save: any;
 
-  async create(createExerciseDto: CreateExerciseDto): Promise<Exercise>{ 
-      const exercise = new Exercise();
-      exercise.title = createExerciseDto.title;
-      exercise.content = createExerciseDto.content;
-      exercise.time = createExerciseDto.time;
-      exercise.beginner = createExerciseDto.beginner;
-      exercise.medium = createExerciseDto.medium;
-      exercise.expert = createExerciseDto.expert;
-      exercise.rest_time = createExerciseDto.rest_time;
-    exercise.material = createExerciseDto.material;
-    exercise.video = createExerciseDto.video;
-    exercise.image = createExerciseDto.image;
-    await exercise.save();
-    return exercise;
-    //'This action adds a new exercice';
-  }
 
-  async findAll() {
-    return await Exercise.find()
-    //`This action returns all exercices`;
-  }
+  async create(createExerciseDto: CreateExerciseDto, session: Session, training: Training): Promise<Exercise> {
+    const newExercise = new Exercise();
+
+    newExercise.title = createExerciseDto.title;
+    newExercise.content = createExerciseDto.content;
+    newExercise.time = createExerciseDto.time;
+    newExercise.beginner = createExerciseDto.beginner;
+    newExercise.medium = createExerciseDto.medium;
+    newExercise.expert = createExerciseDto.expert;
+    newExercise.rest_time = createExerciseDto.rest_time;
+    newExercise.material = createExerciseDto.material;
+    newExercise.video = createExerciseDto.video;
+    newExercise.image = createExerciseDto.image;
+    newExercise.training = training;
+    newExercise.session = session;
+
+    await newExercise.save();
+
+    return newExercise;
+  };
+
+
+
+  async findAll(): Promise<Exercise[]> {
+    return await Exercise.find({ relations: { training: true, session: true } });
+  };
+
 
   async findOne(id: number): Promise<Exercise> {
-    return await Exercise.findOneBy({id});
+    return await Exercise.findOne({ relations: { training: true, session: true }, where: { id: id } });
     //`This action returns a #${id} exercice`;
-  }
+  };
 
-  
-  async update(id: number, updateExerciseDto: UpdateExerciseDto) {
-    const exercise = new Exercise();
+
+  async update(exercise: Exercise, updateExerciseDto: UpdateExerciseDto): Promise<Exercise> {
+
     exercise.title = updateExerciseDto.title;
-    exercise.content = updateExerciseDto.content;
     exercise.time = updateExerciseDto.time;
+    exercise.content = updateExerciseDto.content;
     exercise.beginner = updateExerciseDto.beginner;
     exercise.medium = updateExerciseDto.medium;
     exercise.expert = updateExerciseDto.expert;
@@ -47,25 +55,25 @@ export class ExercisesService {
     exercise.material = updateExerciseDto.material;
     exercise.video = updateExerciseDto.video;
     exercise.image = updateExerciseDto.image;
-    await Exercise.update(id, exercise);
-    return await Exercise.findBy({id});
-  }
 
-  /* async update(id: number, updateExerciseDto: UpdateExerciseDto): Promise<Exercise> {
-    await Exercise.update(id, updateExerciseDto);
-    return Exercise.findOneBy({id});
-    //`This action updates a #${id} exercice`;
-  } */
+    await exercise.save();
 
-  async remove(id: number){
-    const exercise = await Exercise.findOneBy({id});
-    if (exercise)
-    {
+
+    return await Exercise.findOneBy({ id: exercise.id });
+  };
+
+
+
+  async remove(id: number): Promise<Exercise> {
+
+    const exercise = await Exercise.findOneBy({ id });
+    
+    if (exercise) {
       return await exercise.remove();
-    }
+    };
 
     throw new HttpException('training not found', HttpStatus.NOT_FOUND);
   };
-    //`This action removes a #${id} exercice`;
-  }
+
+};
 

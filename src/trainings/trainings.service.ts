@@ -6,6 +6,10 @@ import { Training } from './entities/training.entity';
 
 @Injectable()
 export class TrainingsService {
+  trainingsSservice: any;
+  save(training: Training) {
+    throw new Error('Method not implemented.');
+  }
 
 
   async create(createTrainingDto: CreateTrainingDto) {
@@ -23,19 +27,17 @@ export class TrainingsService {
     return await Training.find();
     //`This action returns all trainings`;
   }
-  async findOneById(id: number): Promise<Training> {
-    const training = await Training.findOne({ relations: { users: true }, where: { id: id } });
 
-    if (training) {
-      return training;
-    };
-
-    return undefined;
-  };
+  async findOneById(id: number) {
+    
+    return await Training.findOneBy({ id });
+   
+  }
 
   async update(id: number, training: Training) {
     await Training.update(id, training);
-    return await Training.findBy({ id });
+     return await Training.findBy({ id });
+   
     //`Thi s action updates a #${id} training`;*/
   }
 
