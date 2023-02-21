@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { TrainingsService } from './trainings.service';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { UpdateTrainingDto } from './dto/update-training.dto';
@@ -36,6 +36,12 @@ export class TrainingsController {
     training.title = updateTrainingDto.title;
     training.description = updateTrainingDto.description;
     return await this.trainingsService.update(+id, training);
+
+  /*  if (!training) {
+      throw new NotFoundException(`Training with id ${id} not found.`);
+     }
+    return this.trainingsService.save(training);
+    */
   }
 
   @Delete(':id')

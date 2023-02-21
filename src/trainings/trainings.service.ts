@@ -1,10 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { UpdateTrainingDto } from './dto/update-training.dto';
 import { Training } from './entities/training.entity';
 
 @Injectable()
 export class TrainingsService {
+  trainingsSservice: any;
+  save(training: Training) {
+    throw new Error('Method not implemented.');
+  }
 
   
  async create(createTrainingDto: CreateTrainingDto) {
@@ -23,12 +27,18 @@ export class TrainingsService {
     //`This action returns all trainings`;
   }
   async findById(id: number) {
-    return await Training.findOneBy({id});
+    const training = await this.trainingsSservice.findOne(id);
+    await Training.findOneBy({ id });
+    /* if (!training) {
+      throw new NotFoundException(`Training with id ${id} not found.`);
+    } */
+    return training;
   }
 
-   async update(id: number, training: Training) {
-     await Training.update(id, training);
-     return await Training.findBy({id});
+  async update(id: number, training: Training) {
+    await Training.update(id, training);
+     return await Training.findBy({ id });
+   
     //`Thi s action updates a #${id} training`;*/
   }
 
