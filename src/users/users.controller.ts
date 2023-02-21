@@ -21,11 +21,11 @@ export class UsersController {
 
 
   /** Création d'un nouveau User
-   * * pseudo unique
-   * * email unique
-   * * hashage du password
+   * * Pseudo unique
+   * * Email unique
+   * * Hashage du password
    * @param createUserDto Dto contenant les données de la requête (Insomnia par exemple)
-   * @returns renvoie les data du nouveau User
+   * @returns Renvoie les data du nouveau User
    */
   @Post('register')
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
@@ -68,7 +68,7 @@ export class UsersController {
    * @returns renvoie la liste de tous les Users inscrits (sans les passwords)
    */
   @Get()
-  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
   async findAll(): Promise<any> {
     const users = await this.usersService.findAll();
 
@@ -105,12 +105,16 @@ export class UsersController {
 
 
   /** Permet d'ajouter un Training en favori   
-   * Ajoute le Training dans le User et le User dans le Training   
-   * Nécessite :
-   * * d'être connecté/enregistré
-   * * que le Training à ajouter existe et ne soit pas déjà en favori
-   */
-  @UseGuards(JwtAuthGuard)
+  * Ajoute le Training dans le User et le User dans le Training   
+  * Nécessite :
+  * * d'être connecté/enregistré
+  * * que le Training à ajouter existe et ne soit pas déjà en favori
+  * 
+  * @param id Id du User connecté
+  * @param addToFavorites Id du Training à ajouter
+  * @returns Retourne le User avec le nouveau Training en favori
+  */
+  @UseGuards(JwtAuthGuard) // Authentification du User
   @Patch(':id/favorites')
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
   async addToFavorites(@Param('id') id: number, @Body() addToFavorites: AddToFavoritesDto) {
@@ -151,8 +155,6 @@ export class UsersController {
 
 
 
-
-
   /** Permet d'ajouter un Training en favori   
   * Ajoute le Training dans le User et le User dans le Training   
   * Nécessite :
@@ -163,7 +165,7 @@ export class UsersController {
   * @param removeFromFavorites Id du Training à retirer
   * @returns Retourne le User complet pour vérifier que le Training a été retiré
   */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard) // Authentification du User
   @Patch(':id/favorites/remove')
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
   async removeFromFavorites(@Param('id') id: number, @Body() removeFromFavorites: RemoveFromFavoritesDto) {
@@ -200,10 +202,11 @@ export class UsersController {
   /** Suppression d'un User   
    * Nécessite: 
    * * d'être admin (et donc connecté/enregistré)
+   * 
    * @param id Id du User à supprimer (inscrit dans la barre url)
    * @returns renvoie les données du User supprimé
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard) // Authentification du User
   @Delete(':id')
   @Bind(Param('id', new ParseIntPipe())) // renvoie une erreur si le paramètre n'est pas un number
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
@@ -239,9 +242,12 @@ export class UsersController {
 
 
 
-  // INUTILE POUR LE MOMENT
+
+};
+
+
+// INUTILE POUR LE MOMENT
   // @Patch(':id')
   // async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserFriendListDto): Promise<any> {
   //   // return this.usersService.updateFriendsList(+id, updateUserDto);
   // }
-};

@@ -5,8 +5,9 @@ import { Friendship } from './entities/friendship.entity';
 @Injectable()
 export class FriendshipsService {
 
+
   /** Crée une demande d'ami (false par défaut - en attente de l'autre User) */
-  async create(userSender: User, userReceiver: User) {
+  async create(userSender: User, userReceiver: User): Promise<Friendship> {
     const newFriendship = new Friendship()
 
     newFriendship.userSender = userSender;
@@ -21,7 +22,7 @@ export class FriendshipsService {
 
 
   /** Récupère la liste de tous les amis d'un User (pseudos) */
-  async findAllFriends(userId: number, pseudoUser: string) {
+  async findAllPseudosFriends(userId: number, pseudoUser: string): Promise<string[]> {
 
     const friendships = await Friendship.find({
       relations: {
@@ -40,10 +41,9 @@ export class FriendshipsService {
 
     // Récupère tous les amis à partir des amitiés (true) récupérées
     if (friendships) {
-      console.log(friendships);
 
       const friends = friendships
-      // Fait un tableau de tous les pseudos des amis du User (pour chaque amitié, met dans le tableau le pseudo inverse de la demande (sender ou receiver)
+        // Fait un tableau de tous les pseudos des amis du User (pour chaque amitié, met dans le tableau le pseudo inverse de la demande (sender ou receiver)
         .map(friendship => {
           if (friendship.userReceiver.pseudo === pseudoUser) {
             return friendship.userSender.pseudo;
@@ -59,7 +59,45 @@ export class FriendshipsService {
 
 
 
-  /** Récupère une demande d'amitié par le demandeur et le receveur */ 
+/** Récupère la liste de tous les amis d'un User (users) */
+async findAllFriends(userId: number, pseudoUser: string): Promise<User[]> {
+
+  const friendships = await Friendship.find({
+    relations: {
+      userSender: true,
+      userReceiver: true
+    },
+    select: {
+      userSender: { pseudo: true },
+      userReceiver: { pseudo: true }
+    },
+    where: [
+      { userSender: { id: userId }, status: true },
+      { userReceiver: { id: userId }, status: true },
+    ],
+  });
+
+  // Récupère tous les amis à partir des amitiés (true) récupérées
+  if (friendships) {
+
+    const friends = friendships
+      // Fait un tableau de tous les pseudos des amis du User (pour chaque amitié, met dans le tableau le pseudo inverse de la demande (sender ou receiver)
+      .map(friendship => {
+        if (friendship.userReceiver.pseudo === pseudoUser) {
+          return friendship.userSender;
+        };
+        return friendship.userReceiver;
+      });
+
+    return friends;
+  };
+
+  return undefined;
+};
+
+
+
+  /** Récupère une demande d'amitié par le demandeur et le receveur */
   async findAllByIds(sender: User, receiver: User): Promise<Friendship> {
 
     const friendship = await Friendship.findOne({
@@ -79,7 +117,7 @@ export class FriendshipsService {
 
 
   /** Récupère une demande d'amitié par son Id */
-  async findOneById(id: number) {
+  async findOneById(id: number): Promise<Friendship> {
     const friendship = await Friendship.find({ relations: { userSender: true, userReceiver: true }, where: { id } });
 
     if (friendship.length > 0) {
@@ -91,8 +129,8 @@ export class FriendshipsService {
 
 
 
-  /** Modifie une demande d'ami (Accepter)*/
-  async update(friendship: Friendship) {
+  /** Modifie une demande d'ami (Accepter) */
+  async update(friendship: Friendship): Promise<Friendship> {
 
     friendship.status = true;
     friendship.save();
@@ -102,10 +140,10 @@ export class FriendshipsService {
 
 
 
-/** Supprime une demande d'amitié (Refuser) */
-  async remove(id: number) {
+  /** Supprime une demande d'amitié (Refuser) */
+  async remove(id: number): Promise<Friendship> {
 
-    const deleteFriendship = await Friendship.findOneBy({id});
+    const deleteFriendship = await Friendship.findOneBy({ id });
 
     deleteFriendship.remove();
 
