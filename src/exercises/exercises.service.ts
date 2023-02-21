@@ -1,4 +1,4 @@
-import { Body, Injectable, Param, Patch } from '@nestjs/common';
+import { Body, HttpException, HttpStatus, Injectable, Param, Patch, Session } from '@nestjs/common';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise } from './entities/exercises.entity';
@@ -16,7 +16,9 @@ export class ExercisesService {
       exercise.medium = createExerciseDto.medium;
       exercise.expert = createExerciseDto.expert;
       exercise.rest_time = createExerciseDto.rest_time;
-      exercise.material = createExerciseDto.material;
+    exercise.material = createExerciseDto.material;
+    exercise.video = createExerciseDto.video;
+    exercise.image = createExerciseDto.image;
     await exercise.save();
     return exercise;
     //'This action adds a new exercice';
@@ -32,8 +34,8 @@ export class ExercisesService {
     //`This action returns a #${id} exercice`;
   }
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateExerciseDto: UpdateExerciseDto) {
+  
+  async update(id: number, updateExerciseDto: UpdateExerciseDto) {
     const exercise = new Exercise();
     exercise.title = updateExerciseDto.title;
     exercise.content = updateExerciseDto.content;
@@ -43,7 +45,10 @@ export class ExercisesService {
     exercise.expert = updateExerciseDto.expert;
     exercise.rest_time = updateExerciseDto.rest_time;
     exercise.material = updateExerciseDto.material;
-    return await Exercise.update(id, exercise);
+    exercise.video = updateExerciseDto.video;
+    exercise.image = updateExerciseDto.image;
+    await Exercise.update(id, exercise);
+    return await Exercise.findBy({id});
   }
 
   /* async update(id: number, updateExerciseDto: UpdateExerciseDto): Promise<Exercise> {
@@ -53,7 +58,14 @@ export class ExercisesService {
   } */
 
   async remove(id: number){
-    return await Exercise.delete(id);
+    const exercise = await Exercise.findOneBy({id});
+    if (exercise)
+    {
+      return await exercise.remove();
+    }
+
+    throw new HttpException('training not found', HttpStatus.NOT_FOUND);
+  };
     //`This action removes a #${id} exercice`;
   }
-}
+

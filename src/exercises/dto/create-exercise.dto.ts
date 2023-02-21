@@ -46,7 +46,7 @@ export class CreateExerciseDto {
     @Column()
     material: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @Column()
     video: string;
 
