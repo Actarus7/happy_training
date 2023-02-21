@@ -6,13 +6,9 @@ import { Training } from './entities/training.entity';
 
 @Injectable()
 export class TrainingsService {
-  trainingsSservice: any;
-  save(training: Training) {
-    throw new Error('Method not implemented.');
-  }
 
 
-  async create(createTrainingDto: CreateTrainingDto) {
+  async create(createTrainingDto: CreateTrainingDto): Promise<Training> {
     const newTraining = new Training();
 
     newTraining.title = createTrainingDto.title;
@@ -21,30 +17,40 @@ export class TrainingsService {
     await newTraining.save()
 
     return newTraining;
-  }
+  };
 
-  async findAll() {
+
+
+  async findAll(): Promise<Training[]> {
     return await Training.find();
     //`This action returns all trainings`;
-  }
+  };
 
-  async findOneById(id: number) {
-    
-    return await Training.findOneBy({ id });
-   
-  }
 
-  async update(id: number, training: Training) {
-    await Training.update(id, training);
-     return await Training.findBy({ id });
-   
-    //`Thi s action updates a #${id} training`;*/
-  }
+
+  async findOneById(id: number): Promise<Training> {
+
+    return await Training.findOne({ relations: { users: true }, where: { id } });
+
+  };
+
+
+
+  async update(training: Training, updateTrainingDto: UpdateTrainingDto): Promise<Training> {
+
+    training.title = updateTrainingDto.title;
+    training.description = updateTrainingDto.description;
+
+    await training.save();
+
+    return await Training.findOneBy({ id: training.id });
+  };
 
 
 
   /** Ajoute un User au Training */
-  async addUserToTraining(training: Training, user: User) {
+  async addUserToTraining(training: Training, user: User): Promise<Training> {
+
     training.users.push(user);
     await training.save();
 
@@ -54,7 +60,7 @@ export class TrainingsService {
 
 
   /** Supprime un User du Training */
-  async removeUserFromTraining(trainingId: number, user: User) {
+  async removeUserFromTraining(trainingId: number, user: User): Promise<Training> {
 
     // Vérifie que le Training existe
     const training = await Training.findOne({ relations: { users: true }, where: { id: trainingId } });
@@ -84,7 +90,7 @@ export class TrainingsService {
   };
 
 
-  async delete(id: number) /*Promise<void>*/ {
+  async delete(id: number): Promise<Training> {
     const training = await Training.findOneBy({ id });
     if (training) {
       return await training.remove();
@@ -93,6 +99,5 @@ export class TrainingsService {
     throw new HttpException('training not found', HttpStatus.NOT_FOUND);
   };
 
-  //`This action deletes a #${id} training`;
-}
+};
 

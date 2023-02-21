@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, NotFoundException, UseGuards, Request, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, NotFoundException, UseGuards, Request, ForbiddenException, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { TrainingsService } from './trainings.service';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { UpdateTrainingDto } from './dto/update-training.dto';
@@ -11,8 +11,7 @@ export class TrainingsController {
   constructor(
     private readonly trainingsService: TrainingsService,
     private readonly usersService: UsersService
-  )
-  { };
+  ) { };
 
 
   /** Création d'un nouveau Training   
@@ -22,6 +21,7 @@ export class TrainingsController {
    */
   @UseGuards(JwtAuthGuard)
   @Post()
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
   async create(@Body() createTrainingDto: CreateTrainingDto, @Request() req): Promise<any> {
 
 
@@ -44,7 +44,9 @@ export class TrainingsController {
     };
   };
 
+
   @Get()
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
   async findAll() {
 
     return await this.trainingsService.findAll();
@@ -54,6 +56,7 @@ export class TrainingsController {
 
 
   @Get(':id')
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
   async findById(@Param('id') id: string) {
     const training = await this.trainingsService.findOneById(+id);
     if (!training) {
@@ -66,50 +69,57 @@ export class TrainingsController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateTrainingDto: UpdateTrainingDto , @Request()  req): Promise<any> {
-  // Vérifie que le User connecté est un admin
-    
-  const userLoggedAdmin = (await this.usersService.findOneById(req.user.id)).admin;
-  if (!userLoggedAdmin) {
-    throw new ForbiddenException("Vous devez être admin pour modifier un training");
-  }; 
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
+  async update(@Param('id') id: string, @Body() updateTrainingDto: UpdateTrainingDto, @Request() req): Promise<any> {
 
-    // Création d'une nouveau training
-  const training = new Training();
 
-  training.title = updateTrainingDto.title;
-  training.description = updateTrainingDto.description;
+    // Vérifie que le User connecté est un admin
+    const userLoggedAdmin = (await this.usersService.findOneById(req.user.id)).admin;
 
-   await this.trainingsService.update(+id, training);
+    if (!userLoggedAdmin) {
+      throw new ForbiddenException("Vous devez être admin pour modifier un training");
+    };
 
-    if (!training) {
+
+
+    // Vérifie que le Training existe
+    const isTrainingExist = await this.findById(id);
+
+    if (!isTrainingExist) {
       throw new NotFoundException(`Training with id ${id} not found.`);
     };
-    return training;
-    
-};
 
- 
-@UseGuards(JwtAuthGuard)
-@Delete(':id')
-async remove(@Param('id') id: string, @Request() req) /* Promise<void>*/ {
-  
-  // Vérifie que le User connecté est un admin
-  const userLoggedAdmin = (await this.usersService.findOneById(req.user.id)).admin;
 
-  if (!userLoggedAdmin) {
-    throw new ForbiddenException("Vous devez être admin pour supprimer un training");
+
+    // Modification d'un Training
+    const updateTraining = await this.trainingsService.update(isTrainingExist, updateTrainingDto);
+
+    return updateTraining;
+
   };
 
-  const training = await this.trainingsService.delete(+id);
 
-  if (training)
-    return {
-      statusCode: 200,
-      message: 'training supprimé',
-      data: training,
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
+  async remove(@Param('id') id: string, @Request() req) /* Promise<void>*/ {
 
+    // Vérifie que le User connecté est un admin
+    const userLoggedAdmin = (await this.usersService.findOneById(req.user.id)).admin;
+
+    if (!userLoggedAdmin) {
+      throw new ForbiddenException("Vous devez être admin pour supprimer un training");
     };
-  throw new HttpException('training not found', HttpStatus.NOT_FOUND);
-};
+
+    const training = await this.trainingsService.delete(+id);
+
+    if (training)
+      return {
+        statusCode: 200,
+        message: 'training supprimé',
+        data: training,
+
+      };
+    throw new HttpException('training not found', HttpStatus.NOT_FOUND);
+  };
 };
