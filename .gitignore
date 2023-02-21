@@ -2,6 +2,7 @@
 /dist
 /node_modules
 
+
 # Logs
 logs
 *.log
@@ -37,3 +38,7 @@ lerna-debug.log*
 
 # environnement
 .env
+
+
+
+.a_faire
