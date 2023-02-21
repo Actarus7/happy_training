@@ -9,6 +9,12 @@ import { ExercisesModule } from './exercises/exercises.module';
 import { Training } from './trainings/entities/training.entity';
 import { Session } from './sessions/entities/session.entity';
 import { Exercise } from './exercises/entities/exercises.entity';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { FriendshipsModule } from './friendships/friendships.module';
+import { User } from './users/entities/user.entity';
+import { Friendship } from './friendships/entities/friendship.entity';
+import { FavoriteTrainingsModule } from './favorite-trainings/favorite-trainings.module';
 
 @Module({
   imports: [
@@ -20,15 +26,19 @@ import { Exercise } from './exercises/entities/exercises.entity';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [Training, Session, Exercise],
+      entities: [Training, Session, Exercise, User, Friendship],
       synchronize: true,
       logging: true
     }),
     TrainingsModule,
     SessionsModule,
     ExercisesModule,
+    UsersModule,
+    AuthModule,
+    FriendshipsModule,
+    FavoriteTrainingsModule,
   ],
   controllers: [AppController],
   providers: [AppService]
 })
-export class AppModule {}
+export class AppModule { }

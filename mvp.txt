@@ -1,0 +1,33 @@
+Happy Training
+
+Version 1
+Création d'un User
+Création d'un User/Admin
+Création d'un Training/Session/Excercice (par un Admin)
+
+
+
+Version 2
+Création d'un Article(soumis à validation d'un Admin)
+Création d'un Comment (partie Article et/ou Programme)
+Imports des vidéos/photos exemples
+
+
+
+Version 3
+Ajouts de programmes en favoris
+Chronos pour exercices
+Ajouts de photo de profil
+Affichage de la progression d'un Training
+
+
+
+Version 4
+Ajouts de membres en amis
+Messagerie interne
+Possibilité de liker un Article ou un Programme/Exercice
+
+
+
+Version 5
+Ajouts de musiques
