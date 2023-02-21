@@ -8,20 +8,23 @@ export class CreateUserDto {
     @Length(1)
     pseudo: string;
 
+
     @ApiProperty()
     @IsString()
     @Length(1)
     password: string;
 
+
     @ApiProperty()
     @IsEmail()
     email: string;
 
+
     @ApiProperty()
     @IsOptional()
-    @Length(4)
     @IsBoolean()
     admin: number;
+
 
     @ApiProperty()
     @IsUrl()
@@ -33,17 +36,10 @@ export class CreateUserDto {
     //@Transform()
     city: string;
 
+
     @ApiProperty()
     @IsOptional()
     description: string;
-
-
-
-
-
-    
-
-
 
 
 };

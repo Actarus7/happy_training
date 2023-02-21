@@ -1,13 +1,10 @@
-Patch/Update partie User
-Documentation Entity User
-Documentation UserServices
-Documentation Dto partie User
+Refuser une demande d'ami (delete)
 
 
-Voir la table amis
-Requête fonctionnelle pour avoir la liste d'amis ?
-Refus de la demande
+Voir pour l'ajout en favoris des trainings - OK
 
 
-Voir pour l'ajout en favoris des trainings
-Un ajout crée une table relationnelle (MAJ des tables User et Training automatique ?)
+Voir pour retirer des favoris (update User.trainings et Training.users)
+
+
+Documenter le code + API

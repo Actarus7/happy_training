@@ -1,4 +1,5 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { User } from 'src/users/entities/user.entity';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { UpdateTrainingDto } from './dto/update-training.dto';
 import { Training } from './entities/training.entity';
@@ -10,9 +11,9 @@ export class TrainingsService {
     throw new Error('Method not implemented.');
   }
 
-  
- async create(createTrainingDto: CreateTrainingDto) {
-  const newTraining = new Training();
+
+  async create(createTrainingDto: CreateTrainingDto) {
+    const newTraining = new Training();
 
     newTraining.title = createTrainingDto.title;
     newTraining.description = createTrainingDto.description;
@@ -21,7 +22,7 @@ export class TrainingsService {
 
     return newTraining;
   }
- 
+
   async findAll() {
     return await Training.find();
     //`This action returns all trainings`;
@@ -42,16 +43,26 @@ export class TrainingsService {
     //`Thi s action updates a #${id} training`;*/
   }
 
+
+  async addUserToTraining(training: Training, user: User) {
+    training.users.push(user);
+    await training.save();
+
+    return training;
+  };
+
+
+
+
   async delete(id: number) /*Promise<void>*/ {
-    const training = await Training.findOneBy({id});
-    if (training)
-    {
+    const training = await Training.findOneBy({ id });
+    if (training) {
       return await training.remove();
     }
 
     throw new HttpException('training not found', HttpStatus.NOT_FOUND);
   };
-    
-    //`This action deletes a #${id} training`;
-  } 
+
+  //`This action deletes a #${id} training`;
+}
 

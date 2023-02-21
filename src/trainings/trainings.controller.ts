@@ -45,14 +45,19 @@ export class TrainingsController {
 
   @Get()
   async findAll() {
+
     return await this.trainingsService.findAll();
 
   }
 
+
+
   @Get(':id')
   async findById(@Param('id') id: string) {
-    return await this.trainingsService.findById(+id);
+    return await this.trainingsService.findOneById(+id);
   }
+
+
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateTrainingDto: UpdateTrainingDto) {
@@ -67,6 +72,8 @@ export class TrainingsController {
       return this.trainingsService.save(training);
       */
   }
+
+
 
   @Delete(':id')
   async remove(@Param('id') id: string) /* Promise<void>*/ {

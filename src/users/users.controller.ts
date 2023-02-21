@@ -1,17 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, ConflictException, Bind, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, ConflictException, Bind, ParseIntPipe, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserFriendListDto } from './dto/update-user-friend-list.dto';
 import * as bcrypt from 'bcrypt';
 import { ApiTags } from '@nestjs/swagger';
-import { NotFoundException } from '@nestjs/common/exceptions';
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common/exceptions';
+import { AddToFavoritesDto } from './dto/add-to-favorites.dto';
+import { TrainingsService } from 'src/trainings/trainings.service';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly trainingsService: TrainingsService) { }
+
 
 
   /** Création d'un nouveau User
@@ -56,6 +62,7 @@ export class UsersController {
 
 
 
+
   /** Récupère la liste de TOUS les Users inscrits
    * 
    * @returns renvoie la liste de tous les Users inscrits (sans les passwords)
@@ -68,6 +75,7 @@ export class UsersController {
     return users;
 
   };
+
 
 
 
@@ -95,11 +103,49 @@ export class UsersController {
 
 
 
+  /** Permet d'ajouter un Training en favori   
+   * Ajoute le Training dans le User et le User dans le Training   
+   * Nécessite :
+   * * d'être connecté/enregistré
+   * * que le Training à ajouter existe et ne soit pas déjà en favori
+   */
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/favorites')
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
+  async addToFavorites(@Param('id') id: number, @Body() addToFavorites: AddToFavoritesDto) {
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserFriendListDto): Promise<any> {
-    // return this.usersService.updateFriendsList(+id, updateUserDto);
-  }
+    // Récupère le User connecté
+    const userLogged = await this.usersService.findOneById(id);
+
+
+    // Vérifie si le Training à ajouter existe
+    const isTrainingToAdd = await this.trainingsService.findOneById(addToFavorites.training);
+
+    if (!isTrainingToAdd) {
+      throw new NotFoundException('Training Id inconnu');
+    };
+
+
+
+    // Vérifie que le Training n'est pas déjà un favori du User en comparant la liste des favoris du User avec le Training à ajouter
+    const allUserFavorites = userLogged.trainings.map(elm => elm.id);
+
+    if (allUserFavorites.includes(isTrainingToAdd.id)) {
+      throw new BadRequestException('Programme déjà ajouté aux favoris');
+    };
+
+    // Ajoute le User au Training
+    const addUserToTraining = await this.trainingsService.addUserToTraining(isTrainingToAdd, userLogged);
+
+    // Ajoute le Training au User
+    const addTrainingToFavoritesUser = await this.usersService.addToFavorites(userLogged, isTrainingToAdd);
+
+    return {
+      statusCode: 201,
+      message: 'Programme ajouté aux favoris',
+      data: addTrainingToFavoritesUser
+    };
+  };
 
 
 
@@ -109,10 +155,20 @@ export class UsersController {
    * @param id Id du User à supprimer (inscrit dans la barre url)
    * @returns renvoie les données du User supprimé
    */
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @Bind(Param('id', new ParseIntPipe())) // renvoie une erreur si le paramètre n'est pas un number
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
-  async remove(@Param('id') id: string): Promise<any> {
+  async remove(@Param('id') id: string, @Request() req): Promise<any> {
+
+
+    // Vérifie que le User connecté est un admin
+    const isUserLoggedAdmin = (await this.usersService.findOneById(req.user.id)).admin;
+
+    if (!isUserLoggedAdmin) {
+      throw new ForbiddenException("Vous ne disposez pas des droits nécessaires pour supprimer un utilisateur");
+    };
+
 
     // Vérifie que le User à supprimer existe
     const isUserExists = await this.usersService.findOneById(+id);
@@ -132,4 +188,12 @@ export class UsersController {
     };
   };
 
+
+
+
+  // INUTILE POUR LE MOMENT
+  // @Patch(':id')
+  // async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserFriendListDto): Promise<any> {
+  //   // return this.usersService.updateFriendsList(+id, updateUserDto);
+  // }
 };
