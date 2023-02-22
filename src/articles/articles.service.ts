@@ -1,22 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Comment } from 'src/comments/entities/comment.entity';
-import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common/exceptions';
+import { User } from 'src/users/entities/user.entity';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { Article } from './entities/article.entity';
+
 
 @Injectable()
 export class ArticlesService {
 
 
   async getArticles() {
-    return await Article.find({relations: ['comments']});
+    return await Article.find({ relations: ['comments', 'user'] });
   };
 
 
   async getOneArticle(articleId: number) {
-    const article = await Article.findOneBy({ id: articleId });
+    const article = await Article.findOne({ relations: { comments: true, user: true }, where: { id: articleId } });
 
     if (article)
       return article;
@@ -24,14 +24,17 @@ export class ArticlesService {
     return undefined;
   };
 
+
   /** Création d'un nouvel article */
-  async createArticle(createArticleDto: CreateArticleDto) {
-    
+  async createArticle(createArticleDto: CreateArticleDto, userLogged: User) {
+
     const newArticle = new Article();
 
     newArticle.body = createArticleDto.body;
     newArticle.title = createArticleDto.title;
     newArticle.type = createArticleDto.type;
+    newArticle.user = userLogged;
+
 
     newArticle.save();
 
@@ -47,13 +50,12 @@ export class ArticlesService {
 
     await article.save();
 
-    return await Article.findOneBy({ id: articleId });
+    return await Article.find({ relations: ['users', 'comments'], where: { id: articleId } });
   };
 
 
 
   /** Créer une nouvelle méthode pour passer le "published" en true */
-
   async publishedArticle(id: number) {
     const publishedArticle = await Article.findOneBy({ id });
 
@@ -68,16 +70,21 @@ export class ArticlesService {
 
 
   async removeArticle(articleId: number) {
-    const deleteArticle = await Article.findOneBy({ id: articleId });
 
-    await deleteArticle.remove();
+    // Vérifie si l'Article à supprimer existe
+    const deletedArticle = await Article.findOneBy({ id: articleId });
 
-    return deleteArticle;
+    if (!deletedArticle) {
+      throw new NotFoundException("Article Id inconnu");
+    };
+
+    // Suppression de tous les Comments liés à l'Article (pour éviter la contrainte de clé étrangère)
+
+
+
+    await deletedArticle.remove();
+
+    return deletedArticle;
   };
-
-  async addCommentToArticle(articleId: number, comment: Comment) {
-    return `This action adds a #${comment} comment to a #${articleId} article`;
-  }
-
 
 };

@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, Logger, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, Logger, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ClassSerializerInterceptor } from '@nestjs/common/serializer';
 import { ArticlesService } from 'src/articles/articles.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { TrainingsService } from 'src/trainings/trainings.service';
@@ -17,6 +18,7 @@ export class CommentsController {
 
 
   @Get()
+  @UseInterceptors(ClassSerializerInterceptor)
   async getAll() {
     Logger.log('get all comments', 'commentsController');
 
@@ -27,6 +29,7 @@ export class CommentsController {
 
 
   @Get(':commentId')
+  @UseInterceptors(ClassSerializerInterceptor)
   async getOne(@Param('commentId') commentId: number) {
     Logger.log('get one comment', 'commentsController');
 
@@ -40,6 +43,7 @@ export class CommentsController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
+  @UseInterceptors(ClassSerializerInterceptor)
   async update(@Param('id') id: number, @Body() updateCommentDto: UpdateCommentDto) {
 
     // Vérifie si le Comment existe
@@ -65,6 +69,7 @@ export class CommentsController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
+  @UseInterceptors(ClassSerializerInterceptor)
   async remove(@Param('id') id: number) {
     Logger.log('delete a comment', 'commentsController');
     //verifie si le Comment existe
@@ -88,6 +93,7 @@ export class CommentsController {
    */
   @UseGuards(JwtAuthGuard)
   @Post()
+  @UseInterceptors(ClassSerializerInterceptor)
   async createComment(@Body() createCommentDto: CreateCommentDto) {
 
     if (!createCommentDto.articleId) {
@@ -102,7 +108,7 @@ export class CommentsController {
       return await this.commentsService.createComment(createCommentDto, training);
     };
 
-    
+
     // Vérifier l'existence de l'article
     const article = await this.articlesService.getOneArticle(createCommentDto.articleId);
 

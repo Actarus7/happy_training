@@ -1,6 +1,7 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { TypeArticle } from "src/types/enumTypeArticle";
 import { Comment } from "src/comments/entities/comment.entity";
+import { User } from "src/users/entities/user.entity";
 
 
 
@@ -11,7 +12,7 @@ export class Article extends BaseEntity {
     id: number;
 
 
-    @Column({type: 'varchar'})
+    @Column({ type: 'varchar' })
     title: string;
 
 
@@ -22,10 +23,10 @@ export class Article extends BaseEntity {
     type: TypeArticle;
 
 
-    @Column({type: 'varchar'})
+    @Column({ type: 'varchar' })
     body: string;
 
-    
+
     @Column({ type: 'timestamp', default: () => "CURRENT_TIMESTAMP" })
     createdAt: Date;
 
@@ -37,8 +38,12 @@ export class Article extends BaseEntity {
     @Column({ type: 'int', default: 0 })
     likes: number;//ajouter des likes***
 
+
     @OneToMany(type => Comment, comment => comment.article)
     comments: Comment[];
 
+
+    @ManyToOne(() => User, user => user.articles)
+    user: User;
 };
 

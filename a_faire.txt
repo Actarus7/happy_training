@@ -1,2 +1,3 @@
 Documenter le code + API
 
+Problème lors de la suppression d'un Training si ajouté dans en favori (enlever le Training des favoris)

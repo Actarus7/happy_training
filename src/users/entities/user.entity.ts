@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
-// import { FavoriteTraining } from "src/favorite-trainings/entities/favorite-training.entity";
+import { Article } from "src/articles/entities/article.entity";
+import { Comment } from "src/comments/entities/comment.entity";
 import { Friendship } from "src/friendships/entities/friendship.entity";
 import { Training } from "src/trainings/entities/training.entity";
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
@@ -76,13 +77,13 @@ export class User extends BaseEntity {
     receivedFriendships: Friendship[];
 
 
-    /* @OneToMany(() => Article, article => article.user)
+    @OneToMany(() => Article, article => article.user)
     articles: Article[];
 
 
 
     @OneToMany(() => Comment, comment => comment.user)
-    comments: Comment[]; */
+    comments: Comment[];
 
 
 

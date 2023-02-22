@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Logger, HttpStatus, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Logger, HttpStatus, UseGuards, Request, ClassSerializerInterceptor } from '@nestjs/common';
+import { UseInterceptors } from '@nestjs/common/decorators';
 import { HttpException } from '@nestjs/common/exceptions';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
+import { UsersService } from 'src/users/users.service';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -11,15 +12,23 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 
 @Controller('articles')
 export class ArticlesController {
-  constructor(private readonly articlesService: ArticlesService) { }
+  constructor(
+    private readonly articlesService: ArticlesService,
+    private readonly usersService: UsersService) { }
 
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createArticleDto: CreateArticleDto) {
+  @UseInterceptors(ClassSerializerInterceptor)
+  async create(@Body() createArticleDto: CreateArticleDto, @Request() req) {
     Logger.log('create an article', 'ArticlesController');
 
-    const article = await this.articlesService.createArticle(createArticleDto);
+    // Récupère le User connecté
+    const userLogged = await this.usersService.findOneById(req.user.id);
+
+
+
+    const article = await this.articlesService.createArticle(createArticleDto, userLogged);
 
     if (article)
       return article;
@@ -30,6 +39,7 @@ export class ArticlesController {
 
 
   @Get()
+  @UseInterceptors(ClassSerializerInterceptor)
   async getAll() {
     Logger.log('get All articles', 'ArticlesController');
 
@@ -39,6 +49,7 @@ export class ArticlesController {
 
 
   @Get(':articleId')
+  @UseInterceptors(ClassSerializerInterceptor)
   async getOne(
     @Param('articleId') articleId: number) {
     Logger.log('get One article', 'ArticlesController');
@@ -54,6 +65,7 @@ export class ArticlesController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':articleId')
+  @UseInterceptors(ClassSerializerInterceptor)
   async update(
     @Param('articleId') articleId,
     @Body() updateArticleDto: UpdateArticleDto) {
@@ -70,6 +82,7 @@ export class ArticlesController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('/published/:articleId')
+  @UseInterceptors(ClassSerializerInterceptor)
   async publishedArticle(
     @Param('articleId') articleId: number) {
     Logger.log('update an article', 'ArticlesController');
@@ -83,15 +96,16 @@ export class ArticlesController {
   };
 
 
-/**Pour effacer un article, il est necessaire:
- * d'être connecté/enregistré
- */
+  /**Pour effacer un article, il est necessaire:
+   * d'être connecté/enregistré
+   */
   @UseGuards(JwtAuthGuard)
   @Delete(':articleId')
+  @UseInterceptors(ClassSerializerInterceptor)
   async remove(
     @Param('articleId') articleId) {
     Logger.log('remove an article', 'ArticlesController');
-/**verifie que l'article existe */
+    /**verifie que l'article existe */
     const article = await this.articlesService.removeArticle(articleId);
 
     if (article)
@@ -100,8 +114,8 @@ export class ArticlesController {
     throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
   };
 
- 
-  } 
+
+};
 
 
 
