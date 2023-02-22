@@ -10,8 +10,7 @@ import { UsersService } from 'src/users/users.service';
 export class TrainingsController {
   constructor(
     private readonly trainingsService: TrainingsService,
-    private readonly usersService: UsersService
-  ) { };
+    private readonly usersService: UsersService) { };
 
 
   /** Création d'un nouveau Training   
@@ -61,8 +60,8 @@ export class TrainingsController {
     const training = await this.trainingsService.findOneById(+id);
     if (!training) {
       throw new NotFoundException(`Training with id ${id} not found.`);
-      //return await this.trainingsService.findOneById(+id);
-    }
+    };
+
     return training;
   };
 
@@ -111,15 +110,31 @@ export class TrainingsController {
       throw new ForbiddenException("Vous devez être admin pour supprimer un training");
     };
 
-    const training = await this.trainingsService.delete(+id);
 
-    if (training)
-      return {
-        statusCode: 200,
-        message: 'training supprimé',
-        data: training,
+    // Vérifie que le Training à supprimer existe
+    const deletedTraining = await this.trainingsService.findOneById(+id);
 
-      };
-    throw new HttpException('training not found', HttpStatus.NOT_FOUND);
+    if (!deletedTraining) {
+      throw new HttpException('training not found', HttpStatus.NOT_FOUND);
+    };
+
+
+    // Vérifie si le Training a été ajouté aux favoris de User(s)
+    console.log(deletedTraining.users);
+    if (deletedTraining.users.length > 0) {
+       deletedTraining.users.map(user => this.usersService.removeFromFavorites(user, +id))
+    };
+
+
+
+    // Supprime le Training
+    const training = await this.trainingsService.delete(deletedTraining);
+
+    return {
+      statusCode: 200,
+      message: 'training supprimé',
+      data: training,
+
+    };
   };
 };

@@ -22,16 +22,13 @@ export class TrainingsService {
 
 
   async findAll(): Promise<Training[]> {
-    return await Training.find();
-    //`This action returns all trainings`;
+    return await Training.find({ relations: ['users', 'comments'] });
   };
 
 
 
   async findOneById(id: number): Promise<Training> {
-
-    return await Training.findOne({ relations: { users: true }, where: { id } });
-
+    return await Training.findOne({ relations: { users: true, comments: true }, where: { id } });
   };
 
 
@@ -90,14 +87,10 @@ export class TrainingsService {
   };
 
 
-  async delete(id: number): Promise<Training> {
-    const training = await Training.findOneBy({ id });
-    if (training) {
-      return await training.remove();
-    }
+  async delete(training: Training): Promise<Training> {
 
-    throw new HttpException('training not found', HttpStatus.NOT_FOUND);
-  };
+    return await training.remove();
+  }
 
 };
 

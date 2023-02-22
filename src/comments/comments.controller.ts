@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, Logger, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, Logger, UseGuards, UseInterceptors, Request } from '@nestjs/common';
 import { ClassSerializerInterceptor } from '@nestjs/common/serializer';
 import { ArticlesService } from 'src/articles/articles.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { TrainingsService } from 'src/trainings/trainings.service';
+import { UsersService } from 'src/users/users.service';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -12,7 +13,8 @@ export class CommentsController {
   constructor(
     private readonly commentsService: CommentsService,
     private readonly trainingsService: TrainingsService,
-    private readonly articlesService: ArticlesService) { }
+    private readonly articlesService: ArticlesService,
+    private readonly usersService: UsersService) { }
 
 
 
@@ -94,7 +96,13 @@ export class CommentsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(ClassSerializerInterceptor)
-  async createComment(@Body() createCommentDto: CreateCommentDto) {
+  async createComment(@Body() createCommentDto: CreateCommentDto, @Request() req) {
+
+    // Récupère le User connecté
+    const userLogged = await this.usersService.findOneById(req.user.id);
+
+
+
 
     if (!createCommentDto.articleId) {
       // Vérifier l'existence du Training
@@ -105,7 +113,7 @@ export class CommentsController {
       };
 
       // Création du nouveau Comment
-      return await this.commentsService.createComment(createCommentDto, training);
+      return await this.commentsService.createComment(createCommentDto, training, userLogged);
     };
 
 
@@ -118,7 +126,7 @@ export class CommentsController {
 
 
     // Création du nouveau Comment
-    return await this.commentsService.createComment(createCommentDto, article);
+    return await this.commentsService.createComment(createCommentDto, article, userLogged);
 
   };
 }

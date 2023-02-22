@@ -5,12 +5,13 @@ import { Comment } from './entities/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Training } from 'src/trainings/entities/training.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class CommentsService {
 
   async getComments() {
-    return await Comment.find({ relations: ['article'] });
+    return await Comment.find({ relations: ['article', 'training', 'user'] });
   };
 
 
@@ -27,11 +28,12 @@ export class CommentsService {
 
 
 
-  async createComment(createCommentDto: CreateCommentDto, articleOrTraining: Article | Training) {
+  async createComment(createCommentDto: CreateCommentDto, articleOrTraining: Article | Training, user: User) {
     const newComment = new Comment();
 
     newComment.message = createCommentDto.message;
-    
+    newComment.user = user;
+
     if (articleOrTraining instanceof Article) {
       newComment.article = articleOrTraining;
     }
@@ -60,7 +62,7 @@ export class CommentsService {
 
 
 
-  
+
   async removeComment(id: number) {
     const deleteArticle = await Comment.findOneBy({ id });
 
