@@ -107,10 +107,12 @@ export class TrainingsController {
     // Vérifie que le User connecté est un admin
     const userLoggedAdmin = (await this.usersService.findOneById(req.user.id)).admin;
 
+    //vérifie et envoie message erreur si l'User n'est pas Admin
     if (!userLoggedAdmin) {
       throw new ForbiddenException("Vous devez être admin pour supprimer un training");
     };
 
+    //vérification, suppression training et renvoie la data supprimée sinon message erreur id non trouvé
     const training = await this.trainingsService.delete(+id);
 
     if (training)

@@ -8,7 +8,7 @@ import { Exercise } from './entities/exercises.entity';
 @Injectable()
 export class ExercisesService {
 
-
+  // création d'un nouvel exercice
   async create(createExerciseDto: CreateExerciseDto, session: Session, training: Training): Promise<Exercise> {
     const newExercise = new Exercise();
 
@@ -31,18 +31,18 @@ export class ExercisesService {
   };
 
 
-
+  // récupération de tous les exercices
   async findAll(): Promise<Exercise[]> {
     return await Exercise.find({ relations: { training: true, session: true } });
   };
 
-
+  // récupération de l'exercice par son id
   async findOne(id: number): Promise<Exercise> {
     return await Exercise.findOne({ relations: { training: true, session: true }, where: { id: id } });
     //`This action returns a #${id} exercice`;
   };
 
-
+  // modification de l'exercice et mise à jour 
   async update(exercise: Exercise, updateExerciseDto: UpdateExerciseDto): Promise<Exercise> {
 
     exercise.title = updateExerciseDto.title;
@@ -63,7 +63,7 @@ export class ExercisesService {
   };
 
 
-
+  // suppression exercice
   async remove(id: number): Promise<Exercise> {
 
     const exercise = await Exercise.findOneBy({ id });

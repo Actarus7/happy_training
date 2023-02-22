@@ -8,6 +8,7 @@ import { Training } from './entities/training.entity';
 export class TrainingsService {
 
 
+  //création d'un nouveau training
   async create(createTrainingDto: CreateTrainingDto): Promise<Training> {
     const newTraining = new Training();
 
@@ -20,14 +21,13 @@ export class TrainingsService {
   };
 
 
-
+  // récuperation de tous les trainings
   async findAll(): Promise<Training[]> {
     return await Training.find();
-    //`This action returns all trainings`;
   };
 
 
-
+ // récupération d'un training par son id
   async findOneById(id: number): Promise<Training> {
 
     return await Training.findOne({ relations: { users: true }, where: { id } });
@@ -35,7 +35,7 @@ export class TrainingsService {
   };
 
 
-
+ // modification training 
   async update(training: Training, updateTrainingDto: UpdateTrainingDto): Promise<Training> {
 
     training.title = updateTrainingDto.title;
@@ -89,7 +89,7 @@ export class TrainingsService {
 
   };
 
-
+// suppression de training par son id
   async delete(id: number): Promise<Training> {
     const training = await Training.findOneBy({ id });
     if (training) {
