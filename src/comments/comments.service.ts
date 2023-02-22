@@ -4,6 +4,7 @@ import { Article } from 'src/articles/entities/article.entity';
 import { Comment } from './entities/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { Training } from 'src/trainings/entities/training.entity';
 
 @Injectable()
 export class CommentsService {
@@ -26,11 +27,18 @@ export class CommentsService {
 
 
 
-  async createComment(createCommentDto: CreateCommentDto, article: Article) {
+  async createComment(createCommentDto: CreateCommentDto, articleOrTraining: Article | Training) {
     const newComment = new Comment();
 
     newComment.message = createCommentDto.message;
-    newComment.article = article;
+    
+    if (articleOrTraining instanceof Article) {
+      newComment.article = articleOrTraining;
+    }
+
+    else if (articleOrTraining instanceof Training) {
+      newComment.training = articleOrTraining;
+    };
 
     await newComment.save();
 

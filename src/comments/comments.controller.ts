@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, Logger, UseGuards } from '@nestjs/common';
 import { ArticlesService } from 'src/articles/articles.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { TrainingsService } from 'src/trainings/trainings.service';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -9,6 +10,7 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 export class CommentsController {
   constructor(
     private readonly commentsService: CommentsService,
+    private readonly trainingsService: TrainingsService,
     private readonly articlesService: ArticlesService) { }
 
 
@@ -25,7 +27,7 @@ export class CommentsController {
 
 
   @Get(':commentId')
-  async getOne(@Param('commentId') commentId: number) { 
+  async getOne(@Param('commentId') commentId: number) {
     Logger.log('get one comment', 'commentsController');
 
     const comment = await this.commentsService.getOneComment(commentId);
@@ -55,14 +57,14 @@ export class CommentsController {
 
 
 
-/**
- * 
- * @param id Id du Comment à supprimer
- * @returns Retourne le Comment supprimé
- */
+  /**
+   * 
+   * @param id Id du Comment à supprimer
+   * @returns Retourne le Comment supprimé
+   */
 
-@UseGuards(JwtAuthGuard)  
-@Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
   async remove(@Param('id') id: number) {
     Logger.log('delete a comment', 'commentsController');
     //verifie si le Comment existe
@@ -79,16 +81,28 @@ export class CommentsController {
 
 
 
-/** Création d'un nouveau Comment   
- * Nécessite : 
- * * d'être connecté/enregistré
- * * que l'Article associé existe
- */
-@UseGuards(JwtAuthGuard) 
-@Post()
+  /** Création d'un nouveau Comment   
+   * Nécessite : 
+   * * d'être connecté/enregistré
+   * * que l'Article associé existe
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post()
   async createComment(@Body() createCommentDto: CreateCommentDto) {
 
+    if (!createCommentDto.articleId) {
+      // Vérifier l'existence du Training
+      const training = await this.trainingsService.findOneById(createCommentDto.trainingId);
 
+      if (!training) {
+        throw new NotFoundException('Training not found');
+      };
+
+      // Création du nouveau Comment
+      return await this.commentsService.createComment(createCommentDto, training);
+    };
+
+    
     // Vérifier l'existence de l'article
     const article = await this.articlesService.getOneArticle(createCommentDto.articleId);
 
@@ -96,6 +110,8 @@ export class CommentsController {
       throw new NotFoundException('Article not found');
     };
 
+
+    // Création du nouveau Comment
     return await this.commentsService.createComment(createCommentDto, article);
 
   };

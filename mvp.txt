@@ -1,14 +1,14 @@
 Happy Training
 
-Version 1
+Version 1 - OK
 Création d'un User - OK
 Création d'un User/Admin - OK
-Création d'un Training/Session/Excercise (par un Admin) - reste partie Admin
+Création d'un Training/Session/Excercise (par un Admin) - OK
 
 
 
 Version 2
-Création d'un Article (soumis à validation d'un Admin) - 
+Création d'un Article (soumis à validation d'un Admin) - reste la validation de l'Admin
 Création d'un Comment (partie Article et/ou Programme) - 
 Imports des vidéos/photos exemples
 
