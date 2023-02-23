@@ -27,10 +27,12 @@ export class CreateUserDto {
 
 
     @ApiProperty()
+    @IsOptional()
     @IsUrl()
     photo: string;
 
     @ApiProperty()
+    @IsOptional()
     @IsString()
     @Length(1)
     //@Transform()

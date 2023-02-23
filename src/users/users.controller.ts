@@ -221,21 +221,15 @@ export class UsersController {
     };
 
 
-    // Vérifie que le User à supprimer existe
-    const isUserExists = await this.usersService.findOneById(+id);
-
-    if (!isUserExists) {
-      throw new NotFoundException('User id inexistant');
-    };
 
 
     // Supprime le User sélectionné
-    await this.usersService.remove(+id);
+    const deletedUser = await this.usersService.remove(+id);
 
     return {
       statusCode: 200,
       message: 'Affichage du User supprimé',
-      data: isUserExists
+      data: deletedUser
     };
   };
 

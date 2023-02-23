@@ -18,6 +18,7 @@ import { ArticlesModule } from './articles/articles.module';
 import { Article } from './articles/entities/article.entity';
 import { CommentsModule } from './comments/comments.module';
 import { Comment } from './comments/entities/comment.entity';
+// import { join } from 'path';
 
 
 @Module({
@@ -26,11 +27,12 @@ import { Comment } from './comments/entities/comment.entity';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT),
+      port: +process.env.DATABASE_PORT!,
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       entities: [User, Friendship, Training, Session, Exercise, Article, Comment],
+      // entities: [join(__dirname, '**', '*.entity.{ts,js}')],
       synchronize: true,
     }),
     TrainingsModule,
@@ -43,7 +45,7 @@ import { Comment } from './comments/entities/comment.entity';
     SessionsModule,
     ExercisesModule,
     ArticlesModule,
-    CommentsModule,
+    CommentsModule
   ],
   controllers: [AppController],
   providers: [AppService]

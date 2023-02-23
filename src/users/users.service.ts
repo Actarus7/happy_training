@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Training } from 'src/trainings/entities/training.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -112,13 +112,19 @@ export class UsersService {
 
 
   /** Supprime un User */
-  async remove(id: number): Promise<User> {
-    const deleteUser = await User.findOneBy({ id });
+  async remove(id: number): Promise<User | undefined> {
 
-    await deleteUser.remove();
+    // Vérifie que le User à supprimer existe
+    const isUserExists = await User.findOneBy({ id });
 
-    if (deleteUser) {
-      return deleteUser;
+    if (!isUserExists) {
+      throw new NotFoundException('User id inexistant');
+    };
+
+    await isUserExists.remove();
+
+    if (isUserExists) {
+      return isUserExists;
     };
 
     return undefined;
