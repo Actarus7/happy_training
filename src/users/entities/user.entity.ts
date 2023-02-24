@@ -36,7 +36,7 @@ export class User extends BaseEntity {
 
     @ApiProperty()
     @Column({ type: 'boolean', default: false })
-    admin: number;
+    admin: boolean;
 
 
     @ApiProperty()

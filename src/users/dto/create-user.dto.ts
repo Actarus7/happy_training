@@ -23,7 +23,7 @@ export class CreateUserDto {
     @ApiProperty()
     @IsOptional()
     @IsBoolean()
-    admin: number;
+    admin: boolean;
 
 
     @ApiProperty()
