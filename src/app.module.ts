@@ -18,6 +18,11 @@ import { ArticlesModule } from './articles/articles.module';
 import { Article } from './articles/entities/article.entity';
 import { CommentsModule } from './comments/comments.module';
 import { Comment } from './comments/entities/comment.entity';
+import { ImagesModule } from './images/images.module';
+import { Image } from './images/entities/image.entity';
+import { MulterModule } from '@nestjs/platform-express';
+import { APP_PIPE } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common/pipes';
 
 
 @Module({
@@ -30,8 +35,13 @@ import { Comment } from './comments/entities/comment.entity';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Friendship, Training, Session, Exercise, Article, Comment],
+      entities: [User, Friendship, Training, Session, Exercise, Article, Comment, Image],
       synchronize: true,
+    }),
+    MulterModule.registerAsync({
+      useFactory: () => ({
+        dest: './upload',
+      }),
     }),
     TrainingsModule,
     SessionsModule,
@@ -44,8 +54,11 @@ import { Comment } from './comments/entities/comment.entity';
     ExercisesModule,
     ArticlesModule,
     CommentsModule,
+    ImagesModule,
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService, {provide: APP_PIPE, useClass: ValidationPipe}
+  
+  ]
 })
 export class AppModule { }
