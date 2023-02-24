@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common/exceptions';
+import { TypeArticle } from 'src/types/enumTypeArticle';
 import { User } from 'src/users/entities/user.entity';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -12,6 +13,24 @@ export class ArticlesService {
 
   async getArticles() {
     return await Article.find({ relations: ['comments', 'user'] });
+  };
+
+
+  // Récupère tous les Articles de Type Recette
+  async getRecettes() {
+    return await Article.find({ relations: ['comments', 'user'], where: { type: TypeArticle.RECETTE } });
+  };
+
+
+  // Récupère tous les Articles de Type Défi
+  async getDéfis() {
+    return await Article.find({ relations: ['comments', 'user'], where: { type: TypeArticle.DEFI } });
+  };
+
+
+  // Récupère tous les Articles de Type Partage
+  async getPartages() {
+    return await Article.find({ relations: ['comments', 'user'], where: { type: TypeArticle.PARTAGE } });
   };
 
 

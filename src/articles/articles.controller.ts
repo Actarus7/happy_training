@@ -37,7 +37,7 @@ export class ArticlesController {
   };
 
 
-
+  @UseGuards(JwtAuthGuard)
   @Get()
   @UseInterceptors(ClassSerializerInterceptor)
   async getAll() {
@@ -47,7 +47,40 @@ export class ArticlesController {
   };
 
 
+  @UseGuards(JwtAuthGuard)
+  @Get('recettes')
+  @UseInterceptors(ClassSerializerInterceptor)
+  async getAllRecettes() {
+    Logger.log('get All articles/recettes', 'ArticlesController');
 
+    return await this.articlesService.getRecettes();
+  };
+
+
+
+  @UseGuards(JwtAuthGuard)
+  @Get('defis')
+  @UseInterceptors(ClassSerializerInterceptor)
+  async getAllDéfis() {
+    Logger.log('get All articles/défis', 'ArticlesController');
+
+    return await this.articlesService.getDéfis();
+  };
+
+
+
+  @UseGuards(JwtAuthGuard)
+  @Get('partages')
+  @UseInterceptors(ClassSerializerInterceptor)
+  async getAllPartages() {
+    Logger.log('get All articles/partages', 'ArticlesController');
+
+    return await this.articlesService.getPartages();
+  };
+
+
+
+  @UseGuards(JwtAuthGuard)
   @Get(':articleId')
   @UseInterceptors(ClassSerializerInterceptor)
   async getOne(
@@ -61,6 +94,7 @@ export class ArticlesController {
 
     throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
   };
+
 
 
   @UseGuards(JwtAuthGuard)
@@ -80,6 +114,7 @@ export class ArticlesController {
   };
 
 
+
   @UseGuards(JwtAuthGuard)
   @Patch('/published/:articleId')
   @UseInterceptors(ClassSerializerInterceptor)
@@ -96,15 +131,21 @@ export class ArticlesController {
   };
 
 
-  /**Pour effacer un article, il est necessaire:
-   * d'être connecté/enregistré
+
+  /** Suppression d'un article    
+   * Nécessite:
+   * * d'être connecté/enregistré
+   * * que l'Article existe
+   * * d'être propriétaire de l'Article ou Admin A FAIRE
+   * @param articleId Id de l'Article à supprimer
+   * @returns Retourne l'Article supprimé
    */
   @UseGuards(JwtAuthGuard)
   @Delete(':articleId')
   @UseInterceptors(ClassSerializerInterceptor)
-  async remove(
-    @Param('articleId') articleId) {
+  async remove(@Param('articleId') articleId) {
     Logger.log('remove an article', 'ArticlesController');
+
     /**verifie que l'article existe */
     const article = await this.articlesService.removeArticle(articleId);
 
