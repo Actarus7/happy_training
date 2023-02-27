@@ -8,10 +8,13 @@ export class Image extends BaseEntity{
     id: number;
 
     @Column()
-    name: string;
+    originalName: string;
 
     @Column()
-    pseudoUser: string;
+    fileName: string;
+
+    @Column()
+    mimeType: string;
 
     @OneToOne(() => User, user => user.image)
     @JoinTable()

@@ -6,6 +6,7 @@ import { ImagesService } from 'src/images/images.service';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, TrainingsService,ImagesService]
+  providers: [UsersService, TrainingsService, ImagesService],
+  
 })
 export class UsersModule {}

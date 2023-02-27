@@ -79,6 +79,7 @@ export class User extends BaseEntity {
     @OneToOne(() => Image, image => image.user)
     @JoinTable()
     image:Image
+  imagePath: string;
     /* @OneToMany(() => Article, article => article.user)
     articles: Article[];
 

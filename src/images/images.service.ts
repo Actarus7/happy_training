@@ -6,6 +6,7 @@ import { Image } from './entities/image.entity';
 
 @Injectable()
 export class ParseIntPipe implements PipeTransform<string, number> {
+  
   transform(value: string, metadata: ArgumentMetadata): number {
     const val = parseInt(value, 10);
     if (isNaN(val)) {
@@ -21,7 +22,7 @@ export class ImagesService {
   async create(user: User, createImageDto: CreateImageDto): Promise<Image> {
     const newImage = new Image();
 
-    newImage.pseudoUser = user.pseudo;
+    newImage.fileName = user.pseudo;
 
     await newImage.save()
 
@@ -39,13 +40,13 @@ export class ImagesService {
     return await Image.findOneBy({ id });
   }
 
-  async findByPseudo(pseudoUser: string): Promise<string[]> {
-    await Image.findOneBy( {pseudoUser} );
-    return 
+  async findByName(fileName: string): Promise<string[]> {
+     await (Image.findOneBy( {fileName} ));
+     return
   }
 
   //modification image
-  async update(image: Image): Promise<Image> {
+  async update(image: Image,): Promise<Image> {
 
     image.save()
     return image;

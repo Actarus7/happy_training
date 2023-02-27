@@ -68,15 +68,17 @@ export class UsersService {
 
   /** Récupère un User par son Id */
   async findOneById(id: number): Promise<User> {
-    const user = await User.find({ relations: { trainings: true }, where: { id: id } });
+    const user = await User.find({ relations: { trainings: true }, where: { id: id } }) ;
 
     if (user) {
       return user[0];
     };
 
     return undefined;
+    
   };
 
+ 
 
 
   /** Ajoute un Training au User */

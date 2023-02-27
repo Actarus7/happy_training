@@ -1,11 +1,14 @@
-import { IsNotEmpty, IsNumber } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 
 
 export class CreateImageDto {
 
     @IsNumber()
-    id: number
+    id: number;
 
-    @IsNotEmpty()
-    pseudoUser: string
+    @IsString()
+    name: string;
+
+    @IsString()
+    pseudoUser: string;
 }

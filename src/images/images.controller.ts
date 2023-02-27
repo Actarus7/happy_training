@@ -83,7 +83,7 @@ export class ImagesController {
     };
 
 
-    return this.imagesService.update(updateImage);
+    return await this.imagesService.update(updateImage);
   }
 
 

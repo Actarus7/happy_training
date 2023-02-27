@@ -23,6 +23,8 @@ import { Image } from './images/entities/image.entity';
 import { MulterModule } from '@nestjs/platform-express';
 import { APP_PIPE } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common/pipes';
+import { ServeStaticModule } from '@nestjs/serve-static/dist';
+import { join } from 'path';
 
 
 @Module({
@@ -38,11 +40,13 @@ import { ValidationPipe } from '@nestjs/common/pipes';
       entities: [User, Friendship, Training, Session, Exercise, Article, Comment, Image],
       synchronize: true,
     }),
-    MulterModule.registerAsync({
-      useFactory: () => ({
+    MulterModule.register({
         dest: './upload',
-      }),
     }),
+   
+      ServeStaticModule.forRoot({
+        rootPath: join(__dirname, '..', 'upload')
+      }),
     TrainingsModule,
     SessionsModule,
     ExercisesModule,

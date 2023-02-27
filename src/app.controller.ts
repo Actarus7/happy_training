@@ -15,7 +15,23 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './upload',
+      filename: (req, file, callback) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const ext = extname(file.originalname);
+        const filename = `${uniqueSuffix}${ext}`;
+        callback(null, filename);
+      },
+    }),
+  }))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+  }
+  /* 
   @Post('file')
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
@@ -28,19 +44,22 @@ export class AppController {
         callback(null, filename);
       },
     }),
-  }))
+  })) */
 
 
-
-  handleUpload(
-    @Body() body: CreateImageDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    return {
-      body,
-      file: file.buffer.toString(),
-    };
-  }
+  /* 
+    handleUpload(
+      @Body() body: CreateImageDto,
+      @UploadedFile() file: Express.Multer.File,
+    )  {
+      console.log('file');
+      
+      return {
+        body,
+        file: file.buffer.toString(),
+      };
+    }
+   */
 
   @UseInterceptors(FileInterceptor('file'))
   @Post('file/pass-validation')
@@ -81,6 +100,6 @@ export class AppController {
       file: file.buffer.toString(),
     };
   }
-  
+
 }
 
