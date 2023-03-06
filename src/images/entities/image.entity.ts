@@ -16,9 +16,8 @@ export class Image extends BaseEntity {
     @Column()
     mimeType: string;
 
-    @OneToOne(() => User, user => user.image, { cascade: true })
-    @JoinTable()
-    user: User;
+    /* @OneToOne(() => User, user => user.image, { cascade: true })
+    user: User; */
 
 }
 

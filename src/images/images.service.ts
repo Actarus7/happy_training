@@ -34,14 +34,21 @@ export class ImagesService {
     newImage.fileName = file.filename;
     newImage.originalName = file.originalname;
     newImage.mimeType = file.mimetype;
-    newImage.user = user;
+     //newImage.user = user;
+    
+    const img = await newImage.save();
 
-    await newImage.save()
+    user.image = img;
+    await user.save();
+    
+    
     console.log('test4', newImage);
 
-    return newImage;
+    return img;
 
   }
+
+  
 
   /* // récupération de toutes les images 
   async findAll(): Promise<Image[]> {
@@ -93,5 +100,21 @@ export class ImagesService {
 
 
 
+export class MulterConfigService implements MulterOptionsFactory {
+  createMulterOptions(): MulterModuleOptions {
+    return {
+      dest: './upload',
+    };
+  };
+};
 
+export class ParseIntPipe implements PipeTransform<string, number> {
+  transform(value: string, metadata: ArgumentMetadata): number {
+    const val = parseInt(value, 10);
+    if (isNaN(val)) {
+      throw new BadRequestException('Validation failed');
+    };
+    return val;
+  };
+};
 

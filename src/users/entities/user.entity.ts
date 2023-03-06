@@ -4,7 +4,7 @@ import { Exclude } from "class-transformer";
 import { Friendship } from "src/friendships/entities/friendship.entity";
 import { Image } from "src/images/entities/image.entity";
 import { Training } from "src/trainings/entities/training.entity";
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 
 @Entity('users')
@@ -76,11 +76,12 @@ export class User extends BaseEntity {
   @OneToMany(() => Friendship, friendship => friendship.userReceiver)
   receivedFriendships: Friendship[];
 
-  @OneToOne(() => Image, image => image.user)
+  @OneToOne(() => Image)
+  @JoinColumn()
   image: Image
   // imagePath: string;
 
-  
+
   /* @OneToMany(() => Article, article => article.user)
   articles: Article[];
 
