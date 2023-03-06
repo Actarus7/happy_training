@@ -73,9 +73,9 @@ export class TrainingsService {
 
 
     // Crée un nouveau tableau de Users sans le User à supprimer
-    const newUsersList = training.users.map(userr => {
-      if (userr.id !== user.id) {
-        return userr;
+    const newUsersList = training.users.map(user => {
+      if (user.id !== user.id) {
+        return user;
       };
     });
 

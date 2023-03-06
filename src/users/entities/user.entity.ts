@@ -12,81 +12,82 @@ import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne,
 export class User extends BaseEntity {
 
 
-    // Colonnes
-    @ApiProperty()
-    @PrimaryGeneratedColumn()
-    id: number;
+  // Colonnes
+  @ApiProperty()
+  @PrimaryGeneratedColumn()
+  id: number;
 
 
-    @ApiProperty()
-    @Column({ type: 'varchar' })
-    pseudo: string;
+  @ApiProperty()
+  @Column({ type: 'varchar' })
+  pseudo: string;
 
 
-    @ApiProperty()
-    @Exclude() // permet d'exclure une colonne du retour de données en ajoutant un interceptor sur les routes concernées
-    @Column({ type: 'varchar' })
-    password: string;
+  @ApiProperty()
+  @Exclude() // permet d'exclure une colonne du retour de données en ajoutant un interceptor sur les routes concernées
+  @Column({ type: 'varchar' })
+  password: string;
 
 
-    @ApiProperty()
-    @Column({ type: 'varchar' })
-    email: string;
+  @ApiProperty()
+  @Column({ type: 'varchar' })
+  email: string;
 
 
-    @ApiProperty()
-    @Column({ type: 'boolean', default: false })
-    admin: number;
+  @ApiProperty()
+  @Column({ type: 'boolean', default: false })
+  admin: number;
 
 
-    @ApiProperty()
-    @Column({ type: 'varchar', nullable: true })
-    photo: string;
+  @ApiProperty()
+  @Column({ type: 'varchar', nullable: true })
+  photo: string;
 
 
-    @ApiProperty()
-    @Column({ type: 'varchar', nullable: true })
-    city: string;
+  @ApiProperty()
+  @Column({ type: 'varchar', nullable: true })
+  city: string;
 
 
-    @ApiProperty()
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    registrationDate: Date;
+  @ApiProperty()
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  registrationDate: Date;
 
 
-    @ApiProperty()
-    @Column({ type: 'varchar', nullable: true })
-    description: string;
+  @ApiProperty()
+  @Column({ type: 'varchar', nullable: true })
+  description: string;
 
 
-    // Relations
-    @ApiProperty({ type: () => [Training] })
-    @ManyToMany(() => Training, training => training.users, { cascade: true })
-    @JoinTable()
-    trainings: Training[];
+  // Relations
+  @ApiProperty({ type: () => [Training] })
+  @ManyToMany(() => Training, training => training.users, { cascade: true })
+  @JoinTable()
+  trainings: Training[];
 
 
-    @ApiProperty()
-    @OneToMany(() => Friendship, friendship => friendship.userSender)
-    sentFriendships: Friendship[];
-
-
-
-    @ApiProperty()
-    @OneToMany(() => Friendship, friendship => friendship.userReceiver)
-    receivedFriendships: Friendship[];
-
-    @OneToOne(() => Image, image => image.user)
-    @JoinTable()
-    image:Image
-  imagePath: string;
-    /* @OneToMany(() => Article, article => article.user)
-    articles: Article[];
+  @ApiProperty()
+  @OneToMany(() => Friendship, friendship => friendship.userSender)
+  sentFriendships: Friendship[];
 
 
 
-    @OneToMany(() => Comment, comment => comment.user)
-    comments: Comment[]; */
+  @ApiProperty()
+  @OneToMany(() => Friendship, friendship => friendship.userReceiver)
+  receivedFriendships: Friendship[];
+
+  @OneToOne(() => Image, image => image.user)
+  image: Image
+  // imagePath: string;
+
+  
+  /* @OneToMany(() => Article, article => article.user)
+  articles: Article[];
+
+
+
+  @OneToMany(() => Comment, comment => comment.user)
+  comments: Comment[]; */
 
 
 

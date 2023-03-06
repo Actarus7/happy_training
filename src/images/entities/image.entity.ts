@@ -2,8 +2,8 @@ import { User } from "src/users/entities/user.entity";
 import { BaseEntity, Column, Entity, JoinTable, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Image extends BaseEntity{
-   
+export class Image extends BaseEntity {
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -16,7 +16,7 @@ export class Image extends BaseEntity{
     @Column()
     mimeType: string;
 
-    @OneToOne(() => User, user => user.image)
+    @OneToOne(() => User, user => user.image, { cascade: true })
     @JoinTable()
     user: User;
 

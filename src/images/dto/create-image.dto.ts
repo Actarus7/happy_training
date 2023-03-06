@@ -1,14 +1,14 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsString } from "class-validator";
 
 
 export class CreateImageDto {
-
-    @IsNumber()
-    id: number;
+    
+    @IsString()
+    originalName: string;
 
     @IsString()
-    name: string;
+    fileName: string;
 
     @IsString()
-    pseudoUser: string;
+    mimeType: string;
 }
