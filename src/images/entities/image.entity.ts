@@ -16,8 +16,14 @@ export class Image extends BaseEntity {
     @Column()
     mimeType: string;
 
+   
+    }
+    //Le byteatype de données permet le stockage de chaînes binaires
+   /*  @Column({ type: "blob", nullable: true })
+    data: Buffer; */
+
     /* @OneToOne(() => User, user => user.image, { cascade: true })
     user: User; */
 
-}
+
 

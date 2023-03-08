@@ -51,7 +51,7 @@ import { join } from 'path';
     SessionsModule,
     ExercisesModule,
     UsersModule,
-    AuthModule,
+    AuthModule, 
     FriendshipsModule,
     TrainingsModule,
     SessionsModule,

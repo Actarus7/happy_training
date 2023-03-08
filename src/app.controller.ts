@@ -1,11 +1,5 @@
-import { Controller, Post, Get, Body, ParseFilePipeBuilder, UploadedFile, UseInterceptors, } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { CreateImageDto } from './images/dto/create-image.dto';
-import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
 
 
 

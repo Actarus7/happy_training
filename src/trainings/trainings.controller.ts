@@ -48,9 +48,11 @@ export class TrainingsController {
   @Get()
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
   async findAll() {
-
-    return await this.trainingsService.findAll();
-
+    const training = await Training.find();
+    if (!training) {
+      throw new NotFoundException(`Training not found.`);
+    }
+    return training;
   };
 
 

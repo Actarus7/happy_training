@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, Response } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, Response, ParseFilePipe } from '@nestjs/common';
 import { ImagesService } from './images.service';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
@@ -11,8 +11,10 @@ import { User } from 'src/users/entities/user.entity';
 import { ParseFilePipeBuilder, ParseIntPipe } from '@nestjs/common/pipes';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { ParseUUIDPipe } from '@nestjs/common/pipes';
-import { diskStorage } from 'multer';
+import multer, { diskStorage } from 'multer';
 import { extname } from 'path';
+import { DataSource } from 'typeorm';
+import { FileSizeValidationPipe } from './fileSizeValidator';
 
 
 @Controller('images')
@@ -21,9 +23,12 @@ export class ImagesController {
     private readonly imagesService: ImagesService,
     private readonly usersService: UsersService) { }
 
+
+  //////////////////////////////////////////////////////
   @UseGuards(JwtAuthGuard)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', {
+    // stockage de l'image dans le dossier upload
     storage: diskStorage({
       destination: './upload',
       filename: (req, file, callback) => {
@@ -34,16 +39,38 @@ export class ImagesController {
       },
     }),
   }))
-  async uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req) {
+  async uploadFile(@UploadedFile(
+    //   new ParseFilePipe({
+    //   validators: [
+    //     new FileSizeValidationPipe({ maxSize: 1000 }) // validation bug
+    //   ]
+    // })
+  ) file: Express.Multer.File, @Request() req) {
 
     console.log('test1')
+    // stockage des infos de l'image en bdd
     const user = await this.usersService.findOneById(req.user.id);
     console.log('test2', user);
-    
+
     const newImage = await this.imagesService.create(user, file);
 
     return newImage;
   }
+
+
+
+
+  // l'utilisateur doit être authentifié pour
+  //recupérer toutes les images enregistrées dans la base de données et les renvoie.
+  @UseGuards(JwtAuthGuard)
+  @Get('upload')
+  @UseInterceptors(ClassSerializerInterceptor)
+  async findAll() {
+    const images = await this.imagesService.findAll();
+    return images.map(image => image.save());
+
+  };
+
 
 
   @UseInterceptors(FileInterceptor('file'))
@@ -87,6 +114,28 @@ export class ImagesController {
   };
 
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
