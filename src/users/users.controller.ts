@@ -8,6 +8,7 @@ import { AddToFavoritesDto } from './dto/add-to-favorites.dto';
 import { TrainingsService } from 'src/trainings/trainings.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RemoveFromFavoritesDto } from './dto/remove-from-favorites.dto';
+import { GetUserSearchDto } from './dto/user-search.dto';
 
 
 
@@ -92,6 +93,30 @@ export class UsersController {
 
     if (!user) {
       throw new NotFoundException("User id inexistant");
+    };
+
+    return {
+      statusCode: 200,
+      message: 'Affichage du User sélectionné',
+      data: user
+    };
+  };
+
+
+
+
+  /** Récupération d'un User par son pseudo ou son email
+   * @returns renvoir le User sélectionné (sans le password)
+   */
+  @Post('search')
+  // @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
+  async userSearch(@Body() getUserSearchDto: GetUserSearchDto): Promise<any> {
+    console.log(getUserSearchDto);
+
+    const user = await this.usersService.userSearch(getUserSearchDto);
+
+    if (!user) {
+      throw new NotFoundException("User inconnu");
     };
 
     return {

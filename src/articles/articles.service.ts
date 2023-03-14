@@ -24,7 +24,7 @@ export class ArticlesService {
 
   // Récupère tous les Articles de Type Défi
   async getDéfis() {
-    return await Article.find({ relations: ['comments', 'user'], where: { type: TypeArticle.DEFI } });
+    return await Article.find({ relations: { comments: true }, where: { type: TypeArticle.DEFI } });
   };
 
 
@@ -35,7 +35,7 @@ export class ArticlesService {
 
 
   async getOneArticle(articleId: number) {
-    const article = await Article.findOne({ relations: { comments: true, user: true }, where: { id: articleId } });
+    const article = await Article.findOne({ relations: { comments: { user: true } }, where: { id: articleId } });
 
     if (article)
       return article;

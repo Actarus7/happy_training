@@ -57,7 +57,7 @@ export class CommentsService {
 
     await comment.save();
 
-    return await Comment.findOneBy({ id });
+    return await Comment.findOne({ relations: { user: true }, where: { id } });
   };
 
 

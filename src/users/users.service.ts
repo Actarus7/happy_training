@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Training } from 'src/trainings/entities/training.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { GetUserSearchDto } from './dto/user-search.dto';
 import { User } from './entities/user.entity';
 
 
@@ -65,6 +66,20 @@ export class UsersService {
   };
 
 
+  /** Récupère un User par son pseudo */
+  async userSearch(getUserSearchDto: GetUserSearchDto): Promise<User> {
+    const user = await User.find({
+      where: [
+        { email: getUserSearchDto.search },
+        { pseudo: getUserSearchDto.search }]
+    });
+
+    if (user) {
+      return user[0];
+    };
+
+    return undefined;
+  };
 
   /** Récupère un User par son Id */
   async findOneById(id: number): Promise<User> {
