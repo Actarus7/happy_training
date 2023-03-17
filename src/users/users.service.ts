@@ -66,7 +66,7 @@ export class UsersService {
   };
 
 
-  /** Récupère un User par son pseudo */
+  /** Récupère un User par son pseudo ou mail*/
   async userSearch(getUserSearchDto: GetUserSearchDto): Promise<User> {
     const user = await User.find({
       where: [

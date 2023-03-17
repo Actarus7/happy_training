@@ -69,7 +69,7 @@ export class ArticlesService {
 
     await article.save();
 
-    return await Article.find({ relations: ['users', 'comments'], where: { id: articleId } });
+    return await Article.find({ relations: ['user', 'comments'], where: { id: articleId } });
   };
 
 
