@@ -18,7 +18,13 @@ import { ArticlesModule } from './articles/articles.module';
 import { Article } from './articles/entities/article.entity';
 import { CommentsModule } from './comments/comments.module';
 import { Comment } from './comments/entities/comment.entity';
-// import { join } from 'path';
+import { ImagesModule } from './images/images.module';
+import { Image } from './images/entities/image.entity';
+import { MulterModule } from '@nestjs/platform-express';
+import { APP_PIPE } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common/pipes';
+import { ServeStaticModule } from '@nestjs/serve-static/dist';
+import { join } from 'path';
 
 
 @Module({
@@ -31,23 +37,32 @@ import { Comment } from './comments/entities/comment.entity';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Friendship, Training, Session, Exercise, Article, Comment],
-      // entities: [join(__dirname, '**', '*.entity.{ts,js}')],
+      entities: [User, Friendship, Training, Session, Exercise, Article, Comment, Image],
       synchronize: true,
     }),
+    MulterModule.register({
+        dest: './upload',
+    }),
+   
+      ServeStaticModule.forRoot({
+        rootPath: join(__dirname, `..`, `upload`)
+      }),
     TrainingsModule,
     SessionsModule,
     ExercisesModule,
     UsersModule,
-    AuthModule,
+    AuthModule, 
     FriendshipsModule,
     TrainingsModule,
     SessionsModule,
     ExercisesModule,
     ArticlesModule,
-    CommentsModule
+    CommentsModule,
+    ImagesModule,
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService, {provide: APP_PIPE, useClass: ValidationPipe}
+  
+  ]
 })
 export class AppModule { }

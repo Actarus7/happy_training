@@ -65,21 +65,26 @@ export class ExercisesController {
   };
 
 
-
+  // récupération de tous les exercices
   @Get()
   async findAll() {
     return await this.exercisesService.findAll();
   };
 
 
-
+  // récupération d'un exercice par son id
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.exercisesService.findOne(+id);
   }
 
 
-
+  /** Création d'un exercice
+   * * Nécessite :
+   * * d'être connecté/enregistré
+   * * d'être un admin
+   * * que l'exercice existe
+   */
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateExerciseDto: UpdateExerciseDto, @Request() req) {
@@ -106,6 +111,11 @@ export class ExercisesController {
 
   }
 
+  /** suppression d'un exercice
+   * * Nécessite :
+   * * d'être connecté/enregistré
+   * * d'être un admin
+   */
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Request() req) {
@@ -116,7 +126,7 @@ export class ExercisesController {
     if (!userLoggedAdmin) {
       throw new ForbiddenException("Vous devez être admin pour supprimer un exercice");
     };
-
+    //suppression exercice
     const exercise = await this.exercisesService.remove(+id)
     if (exercise)
       return {

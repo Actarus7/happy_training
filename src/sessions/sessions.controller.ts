@@ -50,21 +50,25 @@ export class SessionsController {
   };
 
 
-
+  // liste de toutes les sessions
   @Get()
   async findAll() {
     return await this.sessionsService.findAll();
   };
 
 
-
+  // trouver session par son id
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.sessionsService.findById(+id);
   };
 
 
-
+   /** modification d'une session   
+   * Nécessite :
+   * * d'être connecté/enregistré
+   * * d'être une admin
+   */
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateSessionDto: UpdateSessionDto, @Request() req): Promise<any> {
@@ -104,7 +108,8 @@ export class SessionsController {
     if (!userLoggedAdmin) {
       throw new ForbiddenException("Vous devez être admin pour supprimer une session");
     };
-
+    
+    // suppression session
     const session = await this.sessionsService.delete(+id);
 
     if (session)

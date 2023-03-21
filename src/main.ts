@@ -2,7 +2,10 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
+import { DiskStorageOptions, StorageEngine } from 'multer';
+import { join } from 'path';
 import { AppModule } from './app.module';
 import { corsConfig } from './constants/cors-config';
 import { HttpExceptionFilter } from './errors/AllExceptionsFilter';
@@ -22,6 +25,7 @@ async function bootstrap() {
 
 
   const config = new DocumentBuilder() // configuration de l'API pour Swagger
+
     .setTitle('Happy Training')
     .setDescription('The happy training API description')
     .setVersion('1.0')

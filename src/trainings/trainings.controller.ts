@@ -47,9 +47,11 @@ export class TrainingsController {
   @Get()
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
   async findAll() {
-
-    return await this.trainingsService.findAll();
-
+    const training = await Training.find();
+    if (!training) {
+      throw new NotFoundException(`Training not found.`);
+    }
+    return training;
   };
 
 
@@ -106,6 +108,7 @@ export class TrainingsController {
     // Vérifie que le User connecté est un admin
     const userLoggedAdmin = (await this.usersService.findOneById(req.user.id)).admin;
 
+    //vérifie et envoie message erreur si l'User n'est pas Admin
     if (!userLoggedAdmin) {
       throw new ForbiddenException("Vous devez être admin pour supprimer un training");
     };

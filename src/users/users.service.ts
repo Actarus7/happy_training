@@ -30,7 +30,7 @@ export class UsersService {
 
   /** Récupère tous les Users */
   async findAll(): Promise<User[]> {
-    const users = await User.find();
+    const users = await User.find({relations: { image: true }});
 
     if (users.length > 0) {
       return users;
@@ -90,7 +90,9 @@ export class UsersService {
     };
 
     return undefined;
+
   };
+
 
 
 

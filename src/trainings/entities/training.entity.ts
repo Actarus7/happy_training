@@ -16,7 +16,8 @@ export class Training extends BaseEntity {
   @Column()
   description: string;
 
-
+  @Column({default: 0})
+  like: number;
 
   // Relations
   @OneToMany(() => Session, session => session.training)
@@ -29,6 +30,7 @@ export class Training extends BaseEntity {
 
   @ManyToMany(() => User, (user) => user.trainings)
   users: User[];
+
 
 
 

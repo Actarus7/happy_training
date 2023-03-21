@@ -6,7 +6,7 @@ import { Session } from './entities/session.entity';
 @Injectable()
 export class SessionsService {
 
-
+  // création d'une nouvelle session
   async create(createSessionDto: CreateSessionDto): Promise<Session> {
     const session = new Session();
 
@@ -16,20 +16,19 @@ export class SessionsService {
     await session.save();
 
     return session;
-    //'This action adds a new session';
   };
 
-
+  //récupération de toutes les sessions
   async findAll() {
     return await Session.find();
   };
 
-
+  // récupération de la session par son id
   async findById(id: number) {
     return await Session.findOneBy({ id });
   };
 
-
+  // modification session
   async update(session: Session, updateSessionDto: UpdateSessionDto) {
 
     session.time = updateSessionDto.time;
@@ -40,7 +39,7 @@ export class SessionsService {
     return await Session.findOneBy({ id: session.id });
   };
 
-
+  // suppression session par son id
   async delete(id: number) {
     const session = await Session.findOneBy({ id });
 
