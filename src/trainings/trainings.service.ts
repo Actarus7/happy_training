@@ -95,4 +95,4 @@ export class TrainingsService {
     }
 
 };
-
+};

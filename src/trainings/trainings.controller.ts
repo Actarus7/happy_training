@@ -131,7 +131,7 @@ export class TrainingsController {
 
 
     // Supprime le Training
-    const training = await this.trainingsService.delete(deletedTraining);
+    const training = await this.trainingsService.delete(+id);
 
     return {
       statusCode: 200,
