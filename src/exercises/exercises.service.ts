@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { Training } from 'src/trainings/entities/training.entity';
 import { Session } from 'src/sessions/entities/session.entity';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise } from './entities/exercises.entity';
+import { SearchExercisesDto } from './dto/search-exercises.dto';
 
 @Injectable()
 export class ExercisesService {
@@ -36,12 +37,30 @@ export class ExercisesService {
     return await Exercise.find({ relations: { training: true, session: true } });
   };
 
+
+  // Récupération de tous les Exercices d'une Session d'un Training
+  async findAllExercisesBySessionTraining(searchExercisesDto: SearchExercisesDto) {
+    // Récupération des exercices
+    const exercises = await Exercise.find({
+      where: {
+        training: { id: searchExercisesDto.trainingId },
+        session: { id: searchExercisesDto.sessionId }
+      }
+    });
+
+    if (exercises.length === 0) throw new NotFoundException('Aucun exercice à afficher');
+
+    return exercises;
+  };
+
+
   // récupération de l'exercice par son id
   async findOne(id: number): Promise<Exercise> {
     return await Exercise.findOne({ relations: { training: true, session: true }, where: { id: id } });
     //`This action returns a #${id} exercice`;
   };
 
+  
   // modification de l'exercice et mise à jour 
   async update(exercise: Exercise, updateExerciseDto: UpdateExerciseDto): Promise<Exercise> {
 
@@ -67,7 +86,7 @@ export class ExercisesService {
   async remove(id: number): Promise<Exercise> {
 
     const exercise = await Exercise.findOneBy({ id });
-    
+
     if (exercise) {
       return await exercise.remove();
     };

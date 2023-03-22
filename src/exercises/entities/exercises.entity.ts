@@ -32,10 +32,10 @@ export class Exercise extends BaseEntity {
     @Column()
     material: string;
 
-    @Column()
+    @Column({ type: 'varchar', nullable: true })
     video: string;
 
-    @Column()
+    @Column({ type: 'varchar', nullable: true })
     image: string;
 
     @ManyToOne(() => Training, training => training.exercises)

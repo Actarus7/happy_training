@@ -16,7 +16,7 @@ export class Training extends BaseEntity {
   @Column()
   description: string;
 
-  @Column({default: 0})
+  @Column({type: 'integer', default: 0})
   like: number;
 
   // Relations

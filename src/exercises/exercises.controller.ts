@@ -7,6 +7,7 @@ import { UsersService } from 'src/users/users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { TrainingsService } from 'src/trainings/trainings.service';
 import { SessionsService } from 'src/sessions/sessions.service';
+import { SearchExercisesDto } from './dto/search-exercises.dto';
 
 @Controller('exercises')
 export class ExercisesController {
@@ -72,14 +73,33 @@ export class ExercisesController {
   };
 
 
+  // récupération de tous les exercices d'une session d'un training
+  @Post('training/session')
+  async findAllExercisesBySessionTraining(@Body() searchExercisesDto: SearchExercisesDto) {
+
+    // Vérifie que le training existe
+    const isTraining = await this.trainingsService.findOneById(searchExercisesDto.trainingId);
+    if (!isTraining) throw new NotFoundException('Training introuvable');
+
+
+    // Vérifie que le training existe
+    const isSession = await this.sessionsService.findById(searchExercisesDto.sessionId);
+    if (!isSession) throw new NotFoundException('Session introuvable');
+
+
+
+    return await this.exercisesService.findAllExercisesBySessionTraining(searchExercisesDto);
+  };
+
+
   // récupération d'un exercice par son id
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.exercisesService.findOne(+id);
-  }
+  };
 
 
-  /** Création d'un exercice
+  /** Modification d'un exercice
    * * Nécessite :
    * * d'être connecté/enregistré
    * * d'être un admin
@@ -109,7 +129,7 @@ export class ExercisesController {
     // Modifie l'Exercise sélectionné
     return await this.exercisesService.update(isExerciseExist, updateExerciseDto);
 
-  }
+  };
 
   /** suppression d'un exercice
    * * Nécessite :
@@ -138,4 +158,4 @@ export class ExercisesController {
     throw new HttpException('exercice not found', HttpStatus.NOT_FOUND);
 
   };
-}
+};
