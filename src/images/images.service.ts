@@ -28,7 +28,7 @@ export class ImagesService {
 
   // création d'une image à partir des informations de l'image, les données binaires de l'image et l'identifiant de l'utilisateur .
   async create(user: User, file: Express.Multer.File): Promise<Image> {
-    console.log('test3', file);
+    // console.log('test3', file);
 
     const newImage = new Image();
 
@@ -44,7 +44,7 @@ export class ImagesService {
     await user.save();
 
 
-    console.log('test4', newImage);
+    // console.log('test4', newImage);
 
     return img;
 
@@ -89,7 +89,7 @@ export class ImagesService {
     }
 
     const updateImage = await Image.save({ ...image });
-    console.log('test', updateImage);
+    // console.log('test', updateImage);
     return updateImage;
 
 

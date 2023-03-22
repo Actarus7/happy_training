@@ -41,7 +41,7 @@ export class SessionsController {
 
 
     // Création du nouveau Training
-    const session = await this.sessionsService.create(createSessionDto);
+    const session = await this.sessionsService.create(createSessionDto, isTrainingExists);
     return {
       statusCode: 201,
       message: 'session créée',
@@ -56,6 +56,12 @@ export class SessionsController {
     return await this.sessionsService.findAll();
   };
 
+
+  // liste de toutes les sessions d'un training
+  @Get('training/:id')
+  async findAllSessionsByTrainingId(@Param('id') id: string) {
+    return await this.sessionsService.findAllSessionsByTrainingId(+id);
+  };
 
   // trouver session par son id
   @Get(':id')

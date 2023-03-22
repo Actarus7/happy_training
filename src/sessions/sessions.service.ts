@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Training } from 'src/trainings/entities/training.entity';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { Session } from './entities/session.entity';
@@ -7,11 +8,12 @@ import { Session } from './entities/session.entity';
 export class SessionsService {
 
   // création d'une nouvelle session
-  async create(createSessionDto: CreateSessionDto): Promise<Session> {
+  async create(createSessionDto: CreateSessionDto, training: Training): Promise<Session> {
     const session = new Session();
 
     session.description = createSessionDto.description;
     session.time = createSessionDto.time;
+    session.training = training;
 
     await session.save();
 
@@ -21,6 +23,11 @@ export class SessionsService {
   //récupération de toutes les sessions
   async findAll() {
     return await Session.find();
+  };
+
+  //récupération de toutes les sessions d'un training
+  async findAllSessionsByTrainingId(id: number) {
+    return await Session.find({ where: { training: { id: id } } });
   };
 
   // récupération de la session par son id

@@ -23,13 +23,13 @@ export class TrainingsService {
 
   // récuperation de tous les trainings
   async findAll(): Promise<Training[]> {
-    return await Training.find({ relations: ['users', 'comments'] });
+    return await Training.find({ relations: ['users', 'comments', 'sessions', 'exercises'] });
   };
 
 
  // récupération d'un training par son id
   async findOneById(id: number): Promise<Training> {
-    return await Training.findOne({ relations: { users: true, comments: true }, where: { id } });
+    return await Training.findOne({ relations: { users: true, sessions: true, comments: true }, where: { id } });
   };
 
 

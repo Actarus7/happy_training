@@ -1,6 +1,6 @@
 import { Exercise } from "src/exercises/entities/exercises.entity";
 import { Training } from "src/trainings/entities/training.entity";
-import { BaseEntity, Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity()

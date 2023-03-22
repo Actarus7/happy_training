@@ -111,7 +111,7 @@ export class UsersController {
   @Post('search')
   // @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
   async userSearch(@Body() getUserSearchDto: GetUserSearchDto): Promise<any> {
-    console.log(getUserSearchDto);
+    // console.log(getUserSearchDto);
 
     const user = await this.usersService.userSearch(getUserSearchDto);
 

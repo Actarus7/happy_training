@@ -47,10 +47,10 @@ export class ImagesController {
     // })
   ) file: Express.Multer.File, @Request() req) {
 
-    console.log('test1')
+    // console.log('test1')
     // stockage des infos de l'image en bdd
     const user = await this.usersService.findOneById(req.user.id);
-    console.log('test2', user);
+    // console.log('test2', user);
 
     const newImage = await this.imagesService.create(user, file);
 

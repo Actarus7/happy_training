@@ -55,7 +55,6 @@ export class TrainingsController {
   };
 
 
-
   @Get(':id')
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
   async findById(@Param('id') id: string) {
@@ -123,9 +122,8 @@ export class TrainingsController {
 
 
     // Vérifie si le Training a été ajouté aux favoris de User(s)
-    console.log(deletedTraining.users);
     if (deletedTraining.users.length > 0) {
-       deletedTraining.users.map(user => this.usersService.removeFromFavorites(user, +id))
+      deletedTraining.users.map(user => this.usersService.removeFromFavorites(user, +id))
     };
 
 
