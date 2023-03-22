@@ -23,17 +23,27 @@ export class TrainingsService {
 
   // récuperation de tous les trainings
   async findAll(): Promise<Training[]> {
+    const trainings = await Training.find({ relations: ['users', 'comments', 'sessions', 'exercises'] });
+
+    if (trainings.length === 0) throw new NotFoundException('Aucun training dans la base de données');
+
+    return trainings;
+  };
+
+
+  // récuperation du premier training de la base de données
+  async findFirstTraining(): Promise<Training[]> {
     return await Training.find({ relations: ['users', 'comments', 'sessions', 'exercises'] });
   };
 
 
- // récupération d'un training par son id
+  // récupération d'un training par son id
   async findOneById(id: number): Promise<Training> {
     return await Training.findOne({ relations: { users: true, sessions: true, comments: true }, where: { id } });
   };
 
 
- // modification training 
+  // modification training 
   async update(training: Training, updateTrainingDto: UpdateTrainingDto): Promise<Training> {
 
     training.title = updateTrainingDto.title;
@@ -87,12 +97,12 @@ export class TrainingsService {
 
   };
 
-// suppression de training par son id
+  // suppression de training par son id
   async delete(id: number): Promise<Training> {
     const training = await Training.findOneBy({ id });
     if (training) {
       return await training.remove();
     }
 
-};
+  };
 };
