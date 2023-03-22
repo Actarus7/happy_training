@@ -59,41 +59,49 @@ export class FriendshipsService {
 
 
 
-/** Récupère la liste de tous les amis d'un User (users) */
-async findAllFriends(userId: number, pseudoUser: string): Promise<User[]> {
+  /** Récupère la liste de tous les amis d'un User (users) */
+  async findAllFriends(userId: number, pseudoUser: string): Promise<User[]> {
 
-  const friendships = await Friendship.find({
-    relations: {
-      userSender: true,
-      userReceiver: true
-    },
-    select: {
-      userSender: { pseudo: true },
-      userReceiver: { pseudo: true }
-    },
-    where: [
-      { userSender: { id: userId }, status: true },
-      { userReceiver: { id: userId }, status: true },
-    ],
-  });
+    const friendships = await Friendship.find({
+      relations: {
+        userSender: true,
+        userReceiver: true
+      },
+      select: {
+        userSender: { pseudo: true },
+        userReceiver: { pseudo: true }
+      },
+      where: [
+        { userSender: { id: userId }, status: true },
+        { userReceiver: { id: userId }, status: true },
+      ],
+    });
 
-  // Récupère tous les amis à partir des amitiés (true) récupérées
-  if (friendships) {
+    // Récupère tous les amis à partir des amitiés (true) récupérées
+    if (friendships) {
 
-    const friends = friendships
-      // Fait un tableau de tous les pseudos des amis du User (pour chaque amitié, met dans le tableau le pseudo inverse de la demande (sender ou receiver)
-      .map(friendship => {
-        if (friendship.userReceiver.pseudo === pseudoUser) {
-          return friendship.userSender;
-        };
-        return friendship.userReceiver;
-      });
+      const friends = friendships
+        // Fait un tableau de tous les pseudos des amis du User (pour chaque amitié, met dans le tableau le pseudo inverse de la demande (sender ou receiver)
+        .map(friendship => {
+          if (friendship.userReceiver.pseudo === pseudoUser) {
+            return friendship.userSender;
+          };
+          return friendship.userReceiver;
+        });
 
-    return friends;
+      return friends;
+    };
+
+    return undefined;
   };
 
-  return undefined;
-};
+
+  async findByUserReceiver(userReceiver: string) {
+    const waitingFriendships = await Friendship.find({ relations: { userSender: true }, where: { userReceiver: { pseudo: userReceiver }, status: false } });
+
+    return waitingFriendships;
+
+  };
 
 
 

@@ -77,6 +77,37 @@ export class FriendshipsController {
 
 
 
+  /** Récupération de toutes les demandes d'amitiés en attente de réponse   
+     * Récupère toutes les demandes d'amitiés en false où le User est receveur   
+     * Nécessite :
+     * * d'être connecté/enregistré
+     * @param req req.user.id = Id du User connecté
+     * @returns Retourne un tableau de toutes les demandes d'amitiés en attente de réponse
+     */
+  @UseGuards(JwtAuthGuard)
+  @Get('user/waiting')
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
+  async findAllFriendships(@Request() req) {
+
+    // Récupère le pseudo du User connecté
+    const pseudoUser = (await this.usersService.findOneById(req.user.id)).pseudo;
+
+
+    // Récupère toutes les demandes en attente
+    const waitingFriendships = await this.friendshipsService.findByUserReceiver(pseudoUser);
+
+    if (waitingFriendships.length === 0) {
+      throw new NotFoundException("Aucune demande en attente");
+    };
+
+    return {
+      statusCode: 200,
+      message: "Vous avez des demandes en attente",
+      data: waitingFriendships
+    };
+  };
+
+
 
 
   /** Récupération d'une demande d'amitié par son Id
@@ -116,10 +147,10 @@ export class FriendshipsController {
    * @returns Retourne un tableau de tous les pseudos amis du User
    */
   @UseGuards(JwtAuthGuard)
-  @Get('user/:id')
-  @Bind(Param('id', new ParseIntPipe())) // renvoie une erreur si le paramètre n'est pas un number
+  @Get('user/friends')
+  // @Bind(Param('id', new ParseIntPipe())) // renvoie une erreur si le paramètre n'est pas un number
   @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
-  async findAllUserPseudosFriends(@Param('id') id: number, @Request() req) {
+  async findAllUserPseudosFriends(@Request() req) {
 
     // Récupère le pseudo du User connecté
     const pseudoUser = (await this.usersService.findOneById(req.user.id)).pseudo;

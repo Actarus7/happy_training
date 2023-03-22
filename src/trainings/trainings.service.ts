@@ -32,8 +32,9 @@ export class TrainingsService {
 
 
   // récuperation du premier training de la base de données
-  async findFirstTraining(): Promise<Training[]> {
-    return await Training.find({ relations: ['users', 'comments', 'sessions', 'exercises'] });
+  async findFirstTraining(): Promise<Training> {
+    const trainings = await Training.find({ relations: ['users', 'comments', 'sessions', 'exercises'] });
+    return trainings[0];
   };
 
 
