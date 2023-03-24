@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ForbiddenException, Request, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ForbiddenException, Request, HttpException, HttpStatus, NotFoundException, Bind, ParseIntPipe, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 import { ExercisesService } from './exercises.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
@@ -70,6 +70,16 @@ export class ExercisesController {
   async findAll() {
     return await this.exercisesService.findAll();
   };
+
+
+
+  // récupération de tous les exercices liés à une session particulière
+  @Get('session/:id')
+  @Bind(Param('id', new ParseIntPipe())) // renvoie une erreur si le paramètre n'est pas un number
+  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
+  async findOneById(@Param('id') id: number): Promise<any> {
+    return await this.exercisesService.findAllBySessionId(id);
+  }; 
 
 
   // récupération d'un exercice par son id

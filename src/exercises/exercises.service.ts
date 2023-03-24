@@ -36,6 +36,12 @@ export class ExercisesService {
     return await Exercise.find({ relations: { training: true, session: true } });
   };
 
+
+  // récupération de tous les exercices liés à une session particulière
+  async findAllBySessionId(id: number): Promise<Exercise[]> {
+    return await Exercise.find({ relations: { training: true, session: true }, where: { session: { id } } });
+  };
+
   // récupération de l'exercice par son id
   async findOne(id: number): Promise<Exercise> {
     return await Exercise.findOne({ relations: { training: true, session: true }, where: { id: id } });
@@ -67,7 +73,7 @@ export class ExercisesService {
   async remove(id: number): Promise<Exercise> {
 
     const exercise = await Exercise.findOneBy({ id });
-    
+
     if (exercise) {
       return await exercise.remove();
     };
