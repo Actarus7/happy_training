@@ -8,24 +8,24 @@ Création d'un Training/Session/Excercise (par un Admin) - OK
 
 
 Version 2
-Création d'un Article (soumis à validation d'un Admin) - reste la validation de l'Admin
-Création d'un Comment (partie Article et/ou Programme) - 
-Imports des vidéos/photos exemples
+Création d'un Comment (partie Article et/ou Programme) - OK
+Ajouts de membres en amis - OK
 
 
 
 Version 3
 Ajouts de programmes en favoris - OK (back)
 (Supprimer des programmes des favoris) - OK (back)
-Ajouts de photo de profil
-Chronos pour exercices
 Possibilité de liker un Article ou un Programme/Exercice
+Création d'un Article (soumis à validation d'un Admin) - reste la validation de l'Admin
+Imports des vidéos/photos exemples
 
 
 
 Version 4
+Ajouts de photo de profil
 Affichage de la progression d'un Training
-Ajouts de membres en amis - OK
+Chronos pour exercices
 
 
 
