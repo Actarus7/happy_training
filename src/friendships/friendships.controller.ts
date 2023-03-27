@@ -25,7 +25,6 @@ export class FriendshipsController {
    * * que le receveur existe
    * * que le receveur ne soit pas le demandeur
    * * que la demande n'existe pas, dans un sens comme dans l'autre
-   * 
    * @param createFriendshipDto Dto contenant les données de la requête (userReceiver: string (pseudo))
    * @param req req.user.id = Id du User connecté
    * @returns Retourne la nouvelle demande d'amitié
@@ -116,8 +115,8 @@ export class FriendshipsController {
    * @returns Retourne la demande d'amitié
    */
   @Get(':id')
-  @Bind(Param('id', new ParseIntPipe())) // renvoie une erreur si le paramètre n'est pas un number
-  @UseInterceptors(ClassSerializerInterceptor) // permet de ne pas renvoyer le password
+  @Bind(Param('id', new ParseIntPipe())) // Renvoie une erreur si le paramètre n'est pas un number
+  @UseInterceptors(ClassSerializerInterceptor) // Permet de ne pas renvoyer le password
   async findOne(@Param('id') id: number) {
 
     const friendship = await this.friendshipsService.findOneById(+id);
@@ -298,7 +297,5 @@ export class FriendshipsController {
       data: deletedFriendship
     };
   };
-
-
 
 };
