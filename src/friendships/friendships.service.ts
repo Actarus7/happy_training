@@ -81,7 +81,7 @@ export class FriendshipsService {
     if (friendships) {
 
       const friends = friendships
-        // Fait un tableau de tous les pseudos des amis du User (pour chaque amitié, met dans le tableau le pseudo inverse de la demande (sender ou receiver)
+        // Fait un tableau de tous les amis du User (pour chaque amitié, met dans le tableau le user inverse de la demande (sender ou receiver)
         .map(friendship => {
           if (friendship.userReceiver.pseudo === pseudoUser) {
             return friendship.userSender;
