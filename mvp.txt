@@ -3,13 +3,13 @@ Happy Training
 Version 1 - OK
 Création d'un User - OK
 Création d'un User/Admin - OK
-Création d'un Training/Session/Excercise (par un Admin) - OK
+Création d'un Comment (partie Article) - OK
 
 
 
 Version 2
-Création d'un Comment (partie Article et/ou Programme) - OK
 Ajouts de membres en amis - OK
+Création d'un Training/Session/Excercise (par un Admin) - OK
 
 
 
