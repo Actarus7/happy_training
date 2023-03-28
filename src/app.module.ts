@@ -25,6 +25,8 @@ import { APP_PIPE } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common/pipes';
 import { ServeStaticModule } from '@nestjs/serve-static/dist';
 import { join } from 'path';
+import { ContactModule } from './contact/contact.module';
+import { Contact } from './contact/entities/contact.entity';
 
 
 @Module({
@@ -37,7 +39,7 @@ import { join } from 'path';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Friendship, Training, Session, Exercise, Article, Comment, Image],
+      entities: [User, Friendship, Training, Session, Exercise, Article, Comment, Image, Contact],
       synchronize: true,
     }),
     MulterModule.register({
@@ -59,6 +61,7 @@ import { join } from 'path';
     ArticlesModule,
     CommentsModule,
     ImagesModule,
+    ContactModule,
   ],
   controllers: [AppController],
   providers: [AppService, {provide: APP_PIPE, useClass: ValidationPipe}
