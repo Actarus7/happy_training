@@ -25,7 +25,6 @@ async function bootstrap() {
 
 
   const config = new DocumentBuilder() // configuration de l'API pour Swagger
-
     .setTitle('Happy Training')
     .setDescription('The happy training API description')
     .setVersion('1.0')
