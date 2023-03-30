@@ -23,11 +23,7 @@ export class TrainingsService {
 
   // récuperation de tous les trainings
   async findAll(): Promise<Training[]> {
-    const trainings = await Training.find({ relations: ['users', 'comments', 'sessions', 'exercises'] });
-
-    if (trainings.length === 0) throw new NotFoundException('Aucun training dans la base de données');
-
-    return trainings;
+    return await Training.find({ relations: ['users', 'comments', 'sessions', 'exercises'] });
   };
 
 
